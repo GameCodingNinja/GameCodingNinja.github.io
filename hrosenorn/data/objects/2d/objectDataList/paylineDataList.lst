@@ -1,0 +1,935 @@
+<objectDataList2D>
+
+    <!-- DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT -->
+    <default  name="">
+        <visual defaultUniformScale="1.5">
+            <texture file="data/textures/bigPayBack/payline_spriteSheet.png"/>
+            <mesh genType="sprite_sheet">
+                <spriteSheet file="data/objects/2d/mesh/bigPayBack/payline.xml"/>
+            </mesh>
+            <shader id="shader_2d_spriteSheet"/>
+        </visual>
+    </default>
+    <!-- DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT -->
+    
+    <objectList>
+    
+        <!-- payline 00000 -->
+        <object name="payline_0">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00000"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="87" g="50" b="205" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_1">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00000"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="161" g="133" b="93" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_2">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00000"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="116" g="67" b="159" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_3">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00000"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="85" g="131" b="154" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 01210 -->
+        <object name="payline_4">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01210"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="70" g="97" b="124" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_5">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01210"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="72" g="99" b="176" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_6">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01210"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="114" g="89" b="92" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_7">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01210"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="187" g="154" b="109" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 10101 -->
+        <object name="payline_8">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="153" g="95" b="153" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_9">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="81" g="153" b="80" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_10">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="176" g="67" b="176" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_11">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="169" g="59" b="96" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_12">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="128" g="158" b="46" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_13">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10101"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="183" g="41" b="125" a="1"/>
+            </visual>
+        </object>
+        
+
+        <!-- payline 01110 -->
+        <object name="payline_14">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="79" g="134" b="103" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_15">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="167" g="67" b="66" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_16">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="97" g="197" b="233" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_17">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="182" g="182" b="26" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_18">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="125" g="202" b="44" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_19">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01110"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="235" g="157" b="118" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 00100 -->
+        <object name="payline_20">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="45" g="89" b="222" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_21">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="160" g="194" b="232" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_22">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="110" g="180" b="143" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_23">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="138" g="172" b="209" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_24">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="181" g="111" b="77" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_25">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00100"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="184" g="184" b="184" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 00012 -->
+        <object name="payline_26">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="202" g="96" b="93" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_27">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="190" g="113" b="41" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_28">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="105" g="108" b="213" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_29">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="86" g="231" b="192" a="1"/>
+            </visual>
+        </object>
+        
+        <!-- inverted -->
+        
+        <object name="payline_30">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="252" g="179" b="250" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_31">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="125" g="170" b="253" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_32">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="77" g="78" b="143" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_33">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="96" g="140" b="141" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 01112 -->
+        <object name="payline_34">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01112"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="142" g="185" b="202" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_35">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01112"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="185" g="125" b="195" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_36">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_01112"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="109" g="153" b="200" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_37">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_01112"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="55" g="80" b="172" a="1"/>
+            </visual>
+        </object>
+
+
+        <!-- payline 10121 -->
+        <object name="payline_38">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10121"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="108" g="147" b="188" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_39">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10121"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="130" g="249" b="247" a="1"/>
+            </visual>
+        </object>
+        
+        <!-- need more colors from this point on -->
+        
+        <object name="payline_40">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10121"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="255" g="153" b="0" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_41">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10121"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="246" g="247" b="8" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 00123 -->
+        <object name="payline_42">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00123"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="0" g="138" b="2" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_43">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00123"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="6" g="185" b="246" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_44">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_00123"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="169" g="7" b="247" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_45">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00123"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="9" g="10" b="247" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 11012 -->
+        <object name="payline_46">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="247" g="9" b="247" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_47">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="245" g="9" b="10" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_48">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="172" g="154" b="58" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_49">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="157" g="12" b="14" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_50">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="89" g="134" b="38" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_51">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="90" g="51" b="240" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_52">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="70" g="97" b="124" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_53">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_11012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="180" g="124" b="195" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 00122 -->
+        <object name="payline_54">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00122"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="123" g="170" b="229" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_55">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00122"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="166" g="66" b="64" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_56">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_00122"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="180" g="24" b="76" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_57">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_00122"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="91" g="125" b="53" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 10012 -->
+        <object name="payline_58">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="108" g="147" b="188" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_59">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="232" g="137" b="35" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_60">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="222" g="194" b="31" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_61">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="175" g="28" b="27" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_62">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="182" g="214" b="94" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_63">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="120" g="194" b="222" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_64">
+            <visual>
+                <mesh mirror="horizontal">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="86" g="215" b="86" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_65">
+            <visual>
+                <mesh mirror="horizontal_vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10012"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="180" g="224" b="74" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 03030 -->
+        <object name="payline_66">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_03030"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="229" g="231" b="21" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_67">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_03030"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="155" g="149" b="68" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 02120 -->
+        <object name="payline_68">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_02120"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="24" g="157" b="152" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_69">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_02120"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="63" g="70" b="160" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_70">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_02120"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="203" g="27" b="110" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_71">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_02120"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="198" g="86" b="151" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 10201 -->
+        <object name="payline_72">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10201"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="172" g="110" b="54" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_73">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10201"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="150" g="189" b="57" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_74">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_10201"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="97" g="207" b="149" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_75">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_10201"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="227" g="138" b="12" a="1"/>
+            </visual>
+        </object>
+        
+        
+        <!-- payline 02220 -->
+        <object name="payline_76">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_02220"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="64" g="64" b="248" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_77">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_02220"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="229" g="53" b="53" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_78">
+            <visual>
+                <mesh>
+                    <spriteSheet>
+                        <glyph id="payline_02220"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="206" g="93" b="243" a="1"/>
+            </visual>
+        </object>
+        
+        <object name="payline_79">
+            <visual>
+                <mesh mirror="vertical">
+                    <spriteSheet>
+                        <glyph id="payline_02220"/>
+                    </spriteSheet>
+                </mesh>
+                <color r="208" g="180" b="22" a="1"/>
+            </visual>
+        </object>
+
+    </objectList>
+
+</objectDataList2D>
+

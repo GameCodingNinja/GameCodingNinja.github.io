@@ -1,0 +1,19 @@
+<listTable>
+
+    <groupList groupName="(stage1)">
+        <file path="data/objects/2d/spritestrategy/stage1/stage.cfg"/>
+    </groupList>
+    
+    <groupList groupName="(sprite)">
+        <file path="data/objects/2d/spritestrategy/actor/spriteList.lst"/>
+    </groupList>
+    
+    <groupList groupName="(big_pay_back_symbol_set_view)">
+        <file path="data/objects/2d/slot/bigPayBack/symbolset.cfg"/>
+    </groupList>
+    
+    <groupList groupName="(big_pay_back_payline_set_view)">
+        <file path="data/objects/2d/slot/payline_view.cfg"/>
+    </groupList>
+  
+</listTable>
