@@ -33,7 +33,7 @@ return getter;
 };
 __webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 __webpack_require__.p = "";
-return __webpack_require__(__webpack_require__.s = 68);
+return __webpack_require__(__webpack_require__.s = 75);
 })
 ([
 (function(module, __webpack_exports__, __webpack_require__) {
@@ -386,14 +386,14 @@ var highResTimer = new HighResTimer;
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return objectDataManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
 var __WEBPACK_IMPORTED_MODULE_1__managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_2__managers_meshmanager__ = __webpack_require__(49);
-var __WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__ = __webpack_require__(24);
+var __WEBPACK_IMPORTED_MODULE_2__managers_meshmanager__ = __webpack_require__(50);
+var __WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__ = __webpack_require__(26);
 var __WEBPACK_IMPORTED_MODULE_4__managers_spritesheetmanager__ = __webpack_require__(51);
 var __WEBPACK_IMPORTED_MODULE_5__utilities_assetholder__ = __webpack_require__(10);
-var __WEBPACK_IMPORTED_MODULE_6__objectdata2d__ = __webpack_require__(79);
-var __WEBPACK_IMPORTED_MODULE_7__objectdata3d__ = __webpack_require__(83);
+var __WEBPACK_IMPORTED_MODULE_6__objectdata2d__ = __webpack_require__(86);
+var __WEBPACK_IMPORTED_MODULE_7__objectdata3d__ = __webpack_require__(90);
 var __WEBPACK_IMPORTED_MODULE_8__utilities_genfunc__ = __webpack_require__(7);
 var __WEBPACK_IMPORTED_MODULE_9__common_defs__ = __webpack_require__(0);
 const LOAD_2D = 0;
@@ -663,16 +663,17 @@ var objectDataManager = new ObjectDataManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__visualcomponent2d__ = __webpack_require__(87);
+var __WEBPACK_IMPORTED_MODULE_0__visualcomponent2d__ = __webpack_require__(94);
 var __WEBPACK_IMPORTED_MODULE_1__physics_physicscomponent2d__ = __webpack_require__(55);
-var __WEBPACK_IMPORTED_MODULE_2__script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_2__script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_3__script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_4__object2d__ = __webpack_require__(18);
-var __WEBPACK_IMPORTED_MODULE_5__utilities_matrix__ = __webpack_require__(16);
-var __WEBPACK_IMPORTED_MODULE_6__common_defs__ = __webpack_require__(0);
-class Sprite2D extends __WEBPACK_IMPORTED_MODULE_4__object2d__["a" ]
+var __WEBPACK_IMPORTED_MODULE_4__common_spritedata__ = __webpack_require__(31);
+var __WEBPACK_IMPORTED_MODULE_5__object2d__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_6__utilities_matrix__ = __webpack_require__(16);
+var __WEBPACK_IMPORTED_MODULE_7__common_defs__ = __webpack_require__(0);
+class Sprite2D extends __WEBPACK_IMPORTED_MODULE_5__object2d__["a" ]
 {
-constructor( objData, id = __WEBPACK_IMPORTED_MODULE_6__common_defs__["_67" ] )
+constructor( objData, id = __WEBPACK_IMPORTED_MODULE_7__common_defs__["_67" ] )
 {
 super();
 this.objData = objData;
@@ -685,9 +686,26 @@ this.id = id;
 this.ai = null;
 this.scriptFactoryMap = new Map;
 this.setVisible( objData.visualData.isActive() );
-if( objData.visualData.genType === __WEBPACK_IMPORTED_MODULE_6__common_defs__["_24" ] )
+if( objData.visualData.genType === __WEBPACK_IMPORTED_MODULE_7__common_defs__["_24" ] )
 this.setCropOffset( objData.visualData.spriteSheet.getGlyph().cropOffset );
-this.parameters.add( __WEBPACK_IMPORTED_MODULE_6__common_defs__["_66" ] );
+this.parameters.add( __WEBPACK_IMPORTED_MODULE_7__common_defs__["_66" ] );
+}
+load( data )
+{
+if( data instanceof __WEBPACK_IMPORTED_MODULE_4__common_spritedata__["a" ] )
+{
+this.copyTransform( data );
+this.createScriptFunctions( data );
+if( this.visualComponent.isFontSprite() && data.fontData )
+this.visualComponent.fontData.copy( data.fontData );
+}
+else if( data instanceof Element )
+{
+this.loadTransFromNode( data );
+this.initScriptFactoryFunctions( data );
+if( this.visualComponent.isFontSprite() )
+this.visualComponent.loadFontPropFromNode( data );
+}
 }
 initScriptFactoryFunctions( node )
 {
@@ -808,7 +826,7 @@ setFrame( index = 0 )
 if( this.visualComponent.frameIndex != index )
 {
 this.visualComponent.setFrame( index );
-if( this.objData.visualData.genType === __WEBPACK_IMPORTED_MODULE_6__common_defs__["_24" ] )
+if( this.objData.visualData.genType === __WEBPACK_IMPORTED_MODULE_7__common_defs__["_24" ] )
 this.setCropOffset( this.objData.visualData.spriteSheet.getGlyph(index).cropOffset );
 }
 }
@@ -864,6 +882,271 @@ __WEBPACK_IMPORTED_MODULE_0__utilities_settings__["a" ].maxZdist );
 }
 var device = new Device;
 var gl = device.glContext;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.d(__webpack_exports__, "a", function() { return eventManager; });
+class EventManager
+{
+constructor()
+{
+this.canvas = document.getElementById('game-surface');
+this.queue = [];
+this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this) );
+this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this) );
+this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this) );
+document.addEventListener('keydown', this.onKeyDown.bind(this) );
+document.addEventListener('keyup', this.onKeyUp.bind(this) );
+document.addEventListener('scroll', this.onScroll.bind(this) );
+this.lastMouseMoveX = 0;
+this.lastMouseMoveY = 0;
+this.mouseMoveRelX = 0;
+this.mouseMoveRelY = 0;
+this.mouseMoveOffsetX = (document.documentElement.scrollLeft - this.canvas.offsetLeft);
+this.mouseMoveOffsetY = (document.documentElement.scrollTop - this.canvas.offsetTop);
+}
+get mouseX() { return this.lastMouseMoveX; }
+get mouseY() { return this.lastMouseMoveY; }
+get mouseRelX() { return this.mouseMoveRelX; }
+get mouseRelY() { return this.mouseMoveRelY; }
+get mouseOffsetX() { return this.mouseMoveOffsetX; }
+get mouseOffsetY() { return this.mouseMoveOffsetY; }
+pollEvent()
+{
+if( this.queue.length )
+return this.queue.shift();
+return null;
+}
+dispatchEvent( _type, ...args )
+{
+let event = new CustomEvent('customEvent',
+{
+detail:
+{
+type: _type,
+arg: args
+}
+});
+this.queue.push( event );
+}
+onScroll( event )
+{
+this.mouseMoveOffsetX = (document.documentElement.scrollLeft - this.canvas.offsetLeft);
+this.mouseMoveOffsetY = (document.documentElement.scrollTop - this.canvas.offsetTop);
+}
+onMouseDown( event )
+{
+this.queue.push( event );
+}
+onMouseUp( event )
+{
+this.queue.push( event );
+}
+onMouseMove( event )
+{
+this.queue.push( event );
+this.mouseMoveRelX = event.movementX;
+this.mouseMoveRelY = event.movementY;
+this.lastMouseMoveX = event.clientX + this.mouseMoveOffsetX;
+this.lastMouseMoveY = event.clientY + this.mouseMoveOffsetY;
+}
+onKeyDown( event )
+{
+if( event.repeat === false )
+{
+this.queue.push( event );
+}
+}
+onKeyUp( event )
+{
+this.queue.push( event );
+}
+onCustomEvent( event )
+{
+this.queue.push( event );
+}
+}
+var eventManager = new EventManager;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_exports__["b"] = downloadFile;
+__webpack_exports__["a"] = countStrOccurrence;
+__webpack_exports__["c"] = modulus;
+__webpack_exports__["d"] = randomInt;
+__webpack_exports__["e"] = shuffle;
+var __WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__ = __webpack_require__(15);
+function downloadFile( fileType, filepath, callback )
+{
+let request = null;
+if( fileType !== 'img' )
+request = new XMLHttpRequest();
+if( fileType === 'xml' )
+{
+request.responseType = 'document';
+request.overrideMimeType('text/xml');
+}
+else if( fileType === 'txt' )
+{
+request.responseType = 'text';
+request.overrideMimeType('text/plain');
+}
+else if( fileType === 'binary' )
+{
+request.responseType = 'arraybuffer';
+}
+else if( fileType === 'img' )
+{
+}
+if( request )
+{
+request.onreadystatechange =
+function()
+{
+if( this.readyState === 4 )
+{
+if( (this.status >= 200 && this.status < 300) || this.status === 304 ) 
+{
+if( fileType === 'xml' )
+callback(this.responseXML.childNodes[0]);
+else if( fileType === 'txt' )
+callback(this.responseText);
+else if( fileType === 'binary' )
+callback(this.response);
+__WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__["a" ].broadcast_loadComplete();
+}
+else
+{
+throw new Error( `HTTP Request failed (${filepath}).` );
+}
+}
+}
+request.open('GET', filepath + '?please-dont-cache=' + Math.random(), true);
+request.send();
+}
+else
+{
+let image = new Image();
+image.onload = () => { callback(image); __WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__["a" ].broadcast_loadComplete(); }
+image.onerror = ( event ) => { throw new Error( `Error downloading file (${filepath})!` ); }
+image.src = filepath;
+}
+}
+function countStrOccurrence( searchStr, subStr )
+{
+let result = 0;
+let found = -1;
+do
+{
+found = searchStr.indexOf( subStr, found+1 );
+if( found != -1 )
+++result;
+}
+while( found != -1 );
+return result;
+}
+function modulus( v1, v2 )
+{
+return (v1 - v2 * Math.floor(v1 / v2));
+}
+function randomInt( min, max )
+{
+min = Math.ceil(min);
+max = Math.floor(max);
+return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomArbitrary( min, max )
+{
+return Math.floor(Math.random() * (max - min)) + min;
+}
+function shuffle( array )
+{
+if( array.length > 2 )
+{
+let currentIndex = array.length, temp, randomIndex;
+let oldLastElement = array[array.length-1];
+while (0 !== currentIndex)
+{
+randomIndex = Math.floor( Math.random() * currentIndex );
+currentIndex -= 1;
+temp = array[currentIndex];
+array[currentIndex] = array[randomIndex];
+array[randomIndex] = temp;
+}
+if( oldLastElement === array[0] )
+{
+randomIndex = Math.trunc(array.length / 2);
+array[0] = array[randomIndex];
+array[randomIndex] = oldLastElement;
+}
+}
+}
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+const ED_NULL  = 0,
+ED_REEL  = 1,
+ED_WHEEL = 2;
+__webpack_exports__["c"] = ED_REEL;
+__webpack_exports__["d"] = ED_WHEEL;
+const ESD_UP               = 0,
+ESD_DOWN             = 1,
+ESD_LEFT             = 2,
+ESD_RIGHT            = 3,
+EDS_CLOCKWISE        = 4,
+EDS_COUNTERCLOCKWISE = 5;
+__webpack_exports__["j"] = ESD_UP;
+__webpack_exports__["g"] = ESD_DOWN;
+__webpack_exports__["h"] = ESD_LEFT;
+__webpack_exports__["i"] = ESD_RIGHT;
+__webpack_exports__["a"] = EDS_CLOCKWISE;
+__webpack_exports__["b"] = EDS_COUNTERCLOCKWISE;
+const EP_PAYLINE = 0,
+EP_SCATTER = 1;
+__webpack_exports__["e"] = EP_PAYLINE;
+__webpack_exports__["f"] = EP_SCATTER;
+const ESS_STOPPED         = 0,
+ESS_SPIN_STARTING   = 1,
+ESS_SPINNING        = 2,
+ESS_PREPARE_TO_STOP = 3,
+ESS_SPIN_STOPPING   = 4;
+__webpack_exports__["E"] = ESS_STOPPED;
+__webpack_exports__["C"] = ESS_SPIN_STARTING;
+__webpack_exports__["B"] = ESS_SPINNING;
+__webpack_exports__["A"] = ESS_PREPARE_TO_STOP;
+__webpack_exports__["D"] = ESS_SPIN_STOPPING;
+const ESLOT_IDLE               = 0,
+ESLOT_KILL_CYCLE_RESULTS = 1,
+ESLOT_PLACE_WAGER        = 2,
+ESLOT_GENERATE_STOPS     = 3,
+ESLOT_EVALUATE           = 4,
+ESLOT_PRE_SPIN           = 5,
+ESLOT_SPIN               = 6,
+ESLOT_POST_SPIN          = 7,
+ESLOT_PRE_AWARD_WIN      = 8,
+ESLOT_BONUS_DECISION     = 9,
+ESLOT_PRE_BONUS          = 10,
+ESLOT_BONUS              = 11,
+ESLOT_POST_BONUS         = 12,
+ESLOT_POST_AWARD_WIN     = 13,
+ESLOT_WAIT_FOR_AWARD     = 14,
+ESLOT_END                = 15;
+__webpack_exports__["p"] = ESLOT_IDLE;
+__webpack_exports__["q"] = ESLOT_KILL_CYCLE_RESULTS;
+__webpack_exports__["r"] = ESLOT_PLACE_WAGER;
+__webpack_exports__["o"] = ESLOT_GENERATE_STOPS;
+__webpack_exports__["n"] = ESLOT_EVALUATE;
+__webpack_exports__["x"] = ESLOT_PRE_SPIN;
+__webpack_exports__["y"] = ESLOT_SPIN;
+__webpack_exports__["u"] = ESLOT_POST_SPIN;
+__webpack_exports__["v"] = ESLOT_PRE_AWARD_WIN;
+__webpack_exports__["l"] = ESLOT_BONUS_DECISION;
+__webpack_exports__["w"] = ESLOT_PRE_BONUS;
+__webpack_exports__["k"] = ESLOT_BONUS;
+__webpack_exports__["t"] = ESLOT_POST_BONUS;
+__webpack_exports__["s"] = ESLOT_POST_AWARD_WIN;
+__webpack_exports__["z"] = ESLOT_WAIT_FOR_AWARD;
+__webpack_exports__["m"] = ESLOT_END;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
@@ -1017,271 +1300,6 @@ return false;
 }
 }
 __webpack_exports__["a"] = Point;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-__webpack_exports__["b"] = downloadFile;
-__webpack_exports__["a"] = countStrOccurrence;
-__webpack_exports__["c"] = modulus;
-__webpack_exports__["d"] = randomInt;
-__webpack_exports__["e"] = shuffle;
-var __WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__ = __webpack_require__(15);
-function downloadFile( fileType, filepath, callback )
-{
-let request = null;
-if( fileType !== 'img' )
-request = new XMLHttpRequest();
-if( fileType === 'xml' )
-{
-request.responseType = 'document';
-request.overrideMimeType('text/xml');
-}
-else if( fileType === 'txt' )
-{
-request.responseType = 'text';
-request.overrideMimeType('text/plain');
-}
-else if( fileType === 'binary' )
-{
-request.responseType = 'arraybuffer';
-}
-else if( fileType === 'img' )
-{
-}
-if( request )
-{
-request.onreadystatechange =
-function()
-{
-if( this.readyState === 4 )
-{
-if( (this.status >= 200 && this.status < 300) || this.status === 304 ) 
-{
-if( fileType === 'xml' )
-callback(this.responseXML.childNodes[0]);
-else if( fileType === 'txt' )
-callback(this.responseText);
-else if( fileType === 'binary' )
-callback(this.response);
-__WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__["a" ].broadcast_loadComplete();
-}
-else
-{
-throw new Error( `HTTP Request failed (${filepath}).` );
-}
-}
-}
-request.open('GET', filepath + '?please-dont-cache=' + Math.random(), true);
-request.send();
-}
-else
-{
-let image = new Image();
-image.onload = () => { callback(image); __WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__["a" ].broadcast_loadComplete(); }
-image.onerror = ( event ) => { throw new Error( `Error downloading file (${filepath})!` ); }
-image.src = filepath;
-}
-}
-function countStrOccurrence( searchStr, subStr )
-{
-let result = 0;
-let found = -1;
-do
-{
-found = searchStr.indexOf( subStr, found+1 );
-if( found != -1 )
-++result;
-}
-while( found != -1 );
-return result;
-}
-function modulus( v1, v2 )
-{
-return (v1 - v2 * Math.floor(v1 / v2));
-}
-function randomInt( min, max )
-{
-min = Math.ceil(min);
-max = Math.floor(max);
-return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-function randomArbitrary( min, max )
-{
-return Math.floor(Math.random() * (max - min)) + min;
-}
-function shuffle( array )
-{
-if( array.length > 2 )
-{
-let currentIndex = array.length, temp, randomIndex;
-let oldLastElement = array[array.length-1];
-while (0 !== currentIndex)
-{
-randomIndex = Math.floor( Math.random() * currentIndex );
-currentIndex -= 1;
-temp = array[currentIndex];
-array[currentIndex] = array[randomIndex];
-array[randomIndex] = temp;
-}
-if( oldLastElement === array[0] )
-{
-randomIndex = Math.trunc(array.length / 2);
-array[0] = array[randomIndex];
-array[randomIndex] = oldLastElement;
-}
-}
-}
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return eventManager; });
-class EventManager
-{
-constructor()
-{
-this.canvas = document.getElementById('game-surface');
-this.queue = [];
-this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this) );
-this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this) );
-this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this) );
-document.addEventListener('keydown', this.onKeyDown.bind(this) );
-document.addEventListener('keyup', this.onKeyUp.bind(this) );
-document.addEventListener('scroll', this.onScroll.bind(this) );
-this.lastMouseMoveX = 0;
-this.lastMouseMoveY = 0;
-this.mouseMoveRelX = 0;
-this.mouseMoveRelY = 0;
-this.mouseMoveOffsetX = (document.documentElement.scrollLeft - this.canvas.offsetLeft);
-this.mouseMoveOffsetY = (document.documentElement.scrollTop - this.canvas.offsetTop);
-}
-get mouseX() { return this.lastMouseMoveX; }
-get mouseY() { return this.lastMouseMoveY; }
-get mouseRelX() { return this.mouseMoveRelX; }
-get mouseRelY() { return this.mouseMoveRelY; }
-get mouseOffsetX() { return this.mouseMoveOffsetX; }
-get mouseOffsetY() { return this.mouseMoveOffsetY; }
-pollEvent()
-{
-if( this.queue.length )
-return this.queue.shift();
-return null;
-}
-dispatchEvent( _type, ...args )
-{
-let event = new CustomEvent('customEvent',
-{
-detail:
-{
-type: _type,
-arg: args
-}
-});
-this.queue.push( event );
-}
-onScroll( event )
-{
-this.mouseMoveOffsetX = (document.documentElement.scrollLeft - this.canvas.offsetLeft);
-this.mouseMoveOffsetY = (document.documentElement.scrollTop - this.canvas.offsetTop);
-}
-onMouseDown( event )
-{
-this.queue.push( event );
-}
-onMouseUp( event )
-{
-this.queue.push( event );
-}
-onMouseMove( event )
-{
-this.queue.push( event );
-this.mouseMoveRelX = event.movementX;
-this.mouseMoveRelY = event.movementY;
-this.lastMouseMoveX = event.clientX + this.mouseMoveOffsetX;
-this.lastMouseMoveY = event.clientY + this.mouseMoveOffsetY;
-}
-onKeyDown( event )
-{
-if( event.repeat === false )
-{
-this.queue.push( event );
-}
-}
-onKeyUp( event )
-{
-this.queue.push( event );
-}
-onCustomEvent( event )
-{
-this.queue.push( event );
-}
-}
-var eventManager = new EventManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-const ED_NULL  = 0,
-ED_REEL  = 1,
-ED_WHEEL = 2;
-__webpack_exports__["c"] = ED_REEL;
-__webpack_exports__["d"] = ED_WHEEL;
-const ESD_UP               = 0,
-ESD_DOWN             = 1,
-ESD_LEFT             = 2,
-ESD_RIGHT            = 3,
-EDS_CLOCKWISE        = 4,
-EDS_COUNTERCLOCKWISE = 5;
-__webpack_exports__["j"] = ESD_UP;
-__webpack_exports__["g"] = ESD_DOWN;
-__webpack_exports__["h"] = ESD_LEFT;
-__webpack_exports__["i"] = ESD_RIGHT;
-__webpack_exports__["a"] = EDS_CLOCKWISE;
-__webpack_exports__["b"] = EDS_COUNTERCLOCKWISE;
-const EP_PAYLINE = 0,
-EP_SCATTER = 1;
-__webpack_exports__["e"] = EP_PAYLINE;
-__webpack_exports__["f"] = EP_SCATTER;
-const ESS_STOPPED         = 0,
-ESS_SPIN_STARTING   = 1,
-ESS_SPINNING        = 2,
-ESS_PREPARE_TO_STOP = 3,
-ESS_SPIN_STOPPING   = 4;
-__webpack_exports__["E"] = ESS_STOPPED;
-__webpack_exports__["C"] = ESS_SPIN_STARTING;
-__webpack_exports__["B"] = ESS_SPINNING;
-__webpack_exports__["A"] = ESS_PREPARE_TO_STOP;
-__webpack_exports__["D"] = ESS_SPIN_STOPPING;
-const ESLOT_IDLE               = 0,
-ESLOT_KILL_CYCLE_RESULTS = 1,
-ESLOT_PLACE_WAGER        = 2,
-ESLOT_GENERATE_STOPS     = 3,
-ESLOT_EVALUATE           = 4,
-ESLOT_PRE_SPIN           = 5,
-ESLOT_SPIN               = 6,
-ESLOT_POST_SPIN          = 7,
-ESLOT_PRE_AWARD_WIN      = 8,
-ESLOT_BONUS_DECISION     = 9,
-ESLOT_PRE_BONUS          = 10,
-ESLOT_BONUS              = 11,
-ESLOT_POST_BONUS         = 12,
-ESLOT_POST_AWARD_WIN     = 13,
-ESLOT_WAIT_FOR_AWARD     = 14,
-ESLOT_END                = 15;
-__webpack_exports__["p"] = ESLOT_IDLE;
-__webpack_exports__["q"] = ESLOT_KILL_CYCLE_RESULTS;
-__webpack_exports__["r"] = ESLOT_PLACE_WAGER;
-__webpack_exports__["o"] = ESLOT_GENERATE_STOPS;
-__webpack_exports__["n"] = ESLOT_EVALUATE;
-__webpack_exports__["x"] = ESLOT_PRE_SPIN;
-__webpack_exports__["y"] = ESLOT_SPIN;
-__webpack_exports__["u"] = ESLOT_POST_SPIN;
-__webpack_exports__["v"] = ESLOT_PRE_AWARD_WIN;
-__webpack_exports__["l"] = ESLOT_BONUS_DECISION;
-__webpack_exports__["w"] = ESLOT_PRE_BONUS;
-__webpack_exports__["k"] = ESLOT_BONUS;
-__webpack_exports__["t"] = ESLOT_POST_BONUS;
-__webpack_exports__["s"] = ESLOT_POST_AWARD_WIN;
-__webpack_exports__["z"] = ESLOT_WAIT_FOR_AWARD;
-__webpack_exports__["m"] = ESLOT_END;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
@@ -1451,10 +1469,10 @@ __webpack_exports__["k"] = loadVertAlignment;
 __webpack_exports__["c"] = loadDynamicOffset;
 var __WEBPACK_IMPORTED_MODULE_0__common_color__ = __webpack_require__(17);
 var __WEBPACK_IMPORTED_MODULE_1__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_2__common_point__ = __webpack_require__(6);
-var __WEBPACK_IMPORTED_MODULE_3__common_rect__ = __webpack_require__(25);
-var __WEBPACK_IMPORTED_MODULE_4__common_vertex2d__ = __webpack_require__(31);
-var __WEBPACK_IMPORTED_MODULE_5__common_dynamicoffset__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_2__common_point__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_3__common_rect__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_4__common_vertex2d__ = __webpack_require__(33);
+var __WEBPACK_IMPORTED_MODULE_5__common_dynamicoffset__ = __webpack_require__(39);
 var __WEBPACK_IMPORTED_MODULE_6__common_defs__ = __webpack_require__(0);
 function loadVertex2d( node )
 {
@@ -1758,7 +1776,7 @@ var scriptManager = new ScriptManager;
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return textureManager; });
-var __WEBPACK_IMPORTED_MODULE_0__common_texture__ = __webpack_require__(48);
+var __WEBPACK_IMPORTED_MODULE_0__common_texture__ = __webpack_require__(49);
 var __WEBPACK_IMPORTED_MODULE_1__system_device__ = __webpack_require__(5);
 class TextureManager
 {
@@ -2287,255 +2305,14 @@ __webpack_exports__["a"] = Color;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(32);
-var __WEBPACK_IMPORTED_MODULE_1__utilities_matrix__ = __webpack_require__(16);
-var __WEBPACK_IMPORTED_MODULE_2__common_defs__ = __webpack_require__(0);
-class Object2D extends __WEBPACK_IMPORTED_MODULE_0__common_object__["a" ]
-{
-constructor()
-{
-super();
-this.matrix = new __WEBPACK_IMPORTED_MODULE_1__utilities_matrix__["a" ];
-}
-transformLocal( matrix )
-{
-matrix.initilizeMatrix();
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["g" ] ) )
-matrix.translateSize( this.cropOffset );
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_65" ] ) )
-this.applyScale( matrix );
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_64" ] ) )
-this.applyRotation( matrix );
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_70" ] ) )
-matrix.translate( this.pos );
-this.parameters.remove( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] );
-this.parameters.add( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
-}
-transform( matrix = null, tranformWorldPos = null )
-{
-this.parameters.remove( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
-if( matrix )
-{
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] ) || tranformWorldPos )
-{
-this.transformLocal( this.matrix );
-this.matrix.mergeMatrix( matrix.matrix );
-}
-}
-else
-{
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] ) )
-this.transformLocal( this.matrix );
-}
-}
-applyScale( matrix )
-{
-this.matrix.setScaleFromPoint( this.scale );
-}
-applyRotation( matrix )
-{
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["d" ] ) )
-this.matrix.translate( this.centerPos );
-this.matrix.rotate( this.rot );
-if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["d" ] ) )
-{
-this.centerPos.invert();
-this.matrix.translate( this.centerPos );
-this.centerPos.invert();
-}
-}
-wasWorldPosTranformed()
-{
-return this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
-}
-forceTransform()
-{
-this.parameters.Add( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] );
-}
-}
-__webpack_exports__["a"] = Object2D;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return shaderManager; });
-var __WEBPACK_IMPORTED_MODULE_0__common_shaderdata__ = __webpack_require__(75);
-var __WEBPACK_IMPORTED_MODULE_1__system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__ = __webpack_require__(7);
-class ShaderManager
-{
-constructor()
-{
-this.shaderMap = new Map;
-this.currentShaderData = null;
-this.currentAttributeCount = 0;
-this.loadCompleteCallback = null;
-this.loadCounter = 0;
-this.initShaderCallback = null;
-}
-load( xmlNode, callback )
-{
-if( xmlNode )
-{
-let shader = xmlNode.getElementsByTagName('shader');
-if( shader )
-{
-this.loadCompleteCallback = callback;
-for( let i = 0; i < shader.length; ++i )
-{
-++this.loadCounter;
-this.createShader( shader[i] );
-}
-}
-}
-}
-createShader( node )
-{
-let shaderTxtId = node.getAttribute('Id');
-let vertexNode = node.getElementsByTagName('vertDataLst');
-let fragmentNode = node.getElementsByTagName('fragDataLst');
-if( this.shaderMap.has(shaderTxtId) )
-throw new Error( `Shader of this name already exists (${shaderTxtId}).` );
-let shaderData = new __WEBPACK_IMPORTED_MODULE_0__common_shaderdata__["a" ];
-this.shaderMap.set( shaderTxtId, shaderData );
-__WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__["b" ]( 'txt', vertexNode[0].getAttribute('file'),
-( vertText ) =>
-{
-this.create( __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VERTEX_SHADER, shaderData, shaderTxtId, vertText );
-__WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__["b" ]( 'txt', fragmentNode[0].getAttribute('file'),
-( fragText ) =>
-{
-this.create( __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].FRAGMENT_SHADER, shaderData, shaderTxtId, fragText );
-this.createProgram( shaderData );
-this.locateShaderVariables( shaderData, vertexNode[0].getElementsByTagName('dataType'), fragmentNode[0].getElementsByTagName('dataType') );
-this.initShaderCallback( shaderTxtId );
---this.loadCounter;
-if( this.loadCounter === 0 )
-this.loadCompleteCallback();
-});
-});
-}
-create( shaderType, shaderData, shaderTxtId, shaderTxt )
-{
-let id = __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].createShader(shaderType);
-if( id === 0 )
-throw new Error( `Error creating shader (${shaderTxtId}).` );
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].shaderSource(id, shaderTxt);
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].compileShader(id);
-if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getShaderParameter(id, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].COMPILE_STATUS) )
-throw new Error( `ERROR compiling shader! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getShaderInfoLog(id)}).` );
-if( shaderType === __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VERTEX_SHADER )
-shaderData.vertexId = id;
-else
-shaderData.fragmentId = id;
-}
-createProgram( shaderData )
-{
-shaderData.programId = __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].createProgram();
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].attachShader( shaderData.programId, shaderData.vertexId );
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].attachShader( shaderData.programId, shaderData.fragmentId );
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].linkProgram( shaderData.programId );
-if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramParameter( shaderData.programId, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].LINK_STATUS ) )
-throw new Error( `ERROR linking program! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramInfoLog(shaderData.programId)}).` );
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].validateProgram( shaderData.programId );
-if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramParameter( shaderData.programId, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VALIDATE_STATUS ) )
-throw new Error( `ERROR validating program! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramInfoLog(shaderData.programId)}).` );
-}
-locateShaderVariables( shaderData, vertNode, fragNode )
-{
-for( let i = 0; i < vertNode.length; ++i )
-{
-let name = vertNode[i].getAttribute('name');
-if( vertNode[i].getAttribute('location') )
-{
-shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getAttribLocation(shaderData.programId, name) );
-++shaderData.attributeCount;
-}
-else
-{
-shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getUniformLocation(shaderData.programId, name) );
-}
-}
-for( let i = 0; i < fragNode.length; ++i )
-{
-let name = fragNode[i].getAttribute('name');
-shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getUniformLocation(shaderData.programId, name) );
-}
-}
-bind( shaderData )
-{
-if( this.currentShaderData != shaderData )
-{
-let gl = __WEBPACK_IMPORTED_MODULE_1__system_device__["a" ].glContext;
-if( this.currentShaderData === null )
-{
-this.currentAttributeCount = shaderData.attributeCount;
-for( let i = 0; i < this.currentAttributeCount; ++i )
-gl.enableVertexAttribArray(i);
-}
-else if( this.currentAttributeCount != shaderData.attributeCount )
-{
-if( this.currentAttributeCount < shaderData.attributeCount )
-{
-for( let i = this.currentAttributeCount; i < shaderData.attributeCount; ++i )
-gl.enableVertexAttribArray(i);
-}
-else
-{
-for( let i = shaderData.attributeCount; i < this.currentAttributeCount; ++i )
-gl.disableVertexAttribArray(i);
-}
-this.currentAttributeCount = shaderData.attributeCount;
-}
-this.currentShaderData = shaderData;
-gl.useProgram( shaderData.programId );
-}
-}
-unbind()
-{
-for( let i = 0; i < this.currentAttributeCount; ++i )
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].disableVertexAttribArray(i);
-this.currentShaderData = null;
-this.currentAttributeCount = 0;
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].useProgram( null );
-}
-getShaderData( shaderId )
-{
-let shader = this.shaderMap.get( shaderId );
-if( shader !== undefined )
-return shader;
-else
-throw new Error( `ERROR Shader has not been created! (${shaderId}).` );
-return null;
-}
-setShaderValue4fv( shaderId, locationId, data )
-{
-let shaderData = this.getShaderData( shaderId );
-if( shaderData.hasLocation( locationId ) )
-{
-let location = shaderData.getLocation( locationId );
-this.bind( shaderData );
-__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].uniform4fv( location, data );
-this.unbind();
-}
-}
-setAllShaderValue4fv( locationId, data )
-{
-for( let [ key, shaderData ] of this.shaderMap.entries() )
-this.setShaderValue4fv( key, locationId, data );
-}
-}
-var shaderManager = new ShaderManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return menuManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
-var __WEBPACK_IMPORTED_MODULE_1__managers_actionmanager__ = __webpack_require__(39);
-var __WEBPACK_IMPORTED_MODULE_2__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
+var __WEBPACK_IMPORTED_MODULE_1__managers_actionmanager__ = __webpack_require__(42);
+var __WEBPACK_IMPORTED_MODULE_2__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_3__managers_signalmanager__ = __webpack_require__(15);
 var __WEBPACK_IMPORTED_MODULE_4__utilities_assetholder__ = __webpack_require__(10);
-var __WEBPACK_IMPORTED_MODULE_5__gui_menu__ = __webpack_require__(86);
-var __WEBPACK_IMPORTED_MODULE_6__gui_menutree__ = __webpack_require__(99);
+var __WEBPACK_IMPORTED_MODULE_5__gui_menu__ = __webpack_require__(93);
+var __WEBPACK_IMPORTED_MODULE_6__gui_menutree__ = __webpack_require__(106);
 var __WEBPACK_IMPORTED_MODULE_7__utilities_genfunc__ = __webpack_require__(7);
 var __WEBPACK_IMPORTED_MODULE_8__common_defs__ = __webpack_require__(0);
 class MenuManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
@@ -3212,19 +2989,523 @@ var menuManager = new MenuManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__controlbase__ = __webpack_require__(91);
+var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(34);
+var __WEBPACK_IMPORTED_MODULE_1__utilities_matrix__ = __webpack_require__(16);
+var __WEBPACK_IMPORTED_MODULE_2__common_defs__ = __webpack_require__(0);
+class Object2D extends __WEBPACK_IMPORTED_MODULE_0__common_object__["a" ]
+{
+constructor()
+{
+super();
+this.matrix = new __WEBPACK_IMPORTED_MODULE_1__utilities_matrix__["a" ];
+}
+transformLocal( matrix )
+{
+matrix.initilizeMatrix();
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["g" ] ) )
+matrix.translateSize( this.cropOffset );
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_65" ] ) )
+this.applyScale( matrix );
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_64" ] ) )
+this.applyRotation( matrix );
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_70" ] ) )
+matrix.translate( this.pos );
+this.parameters.remove( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] );
+this.parameters.add( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
+}
+transform( matrix = null, tranformWorldPos = null )
+{
+this.parameters.remove( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
+if( matrix )
+{
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] ) || tranformWorldPos )
+{
+this.transformLocal( this.matrix );
+this.matrix.mergeMatrix( matrix.matrix );
+}
+}
+else
+{
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] ) )
+this.transformLocal( this.matrix );
+}
+}
+applyScale( matrix )
+{
+this.matrix.setScaleFromPoint( this.scale );
+}
+applyRotation( matrix )
+{
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["d" ] ) )
+this.matrix.translate( this.centerPos );
+this.matrix.rotate( this.rot );
+if( this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["d" ] ) )
+{
+this.centerPos.invert();
+this.matrix.translate( this.centerPos );
+this.centerPos.invert();
+}
+}
+wasWorldPosTranformed()
+{
+return this.parameters.isSet( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_72" ] );
+}
+forceTransform()
+{
+this.parameters.Add( __WEBPACK_IMPORTED_MODULE_2__common_defs__["_69" ] );
+}
+}
+__webpack_exports__["a"] = Object2D;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.d(__webpack_exports__, "a", function() { return soundManager; });
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
+var __WEBPACK_IMPORTED_MODULE_1__common_sound__ = __webpack_require__(107);
+var __WEBPACK_IMPORTED_MODULE_2__common_playlist__ = __webpack_require__(108);
+var __WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__ = __webpack_require__(10);
+class SoundManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
+{
+constructor()
+{
+super();
+this.context = null;
+if( typeof AudioContext !== 'undefined' )
+this.context = new AudioContext();
+else if( typeof webkitAudioContext !== 'undefined' ) 
+this.context = new webkitAudioContext();
+else
+throw new Error('AudioContext not supported.');
+this.soundMapMap = new Map;
+this.playListMapMap = new Map;
+}
+loadGroup( groupAry, finishCallback )
+{
+super.loadGroup( 'Sound', this.soundMapMap, groupAry, finishCallback );
+}
+loadFromNode( group, node, filePath, finishCallback )
+{
+let groupMap = this.soundMapMap.get( group );
+let loadFilesNode = node.getElementsByTagName( 'load' );
+for( let i = 0; i < loadFilesNode.length; ++i )
+{
+let id = loadFilesNode[i].getAttribute( 'id' );
+let filePath = loadFilesNode[i].getAttribute( 'file' );
+if( groupMap.has(id) )
+throw new Error( `Duplicate sound group id (${id}, ${group}, ${filePath})!` );
+let snd = new __WEBPACK_IMPORTED_MODULE_1__common_sound__["a" ];
+groupMap.set( id, snd );
+snd.loadFromNode( loadFilesNode[i] );
+if( !__WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].has( group, filePath ) )
+{
+this.downloadFile( 'binary', group, filePath, finishCallback,
+( group, audioData, filePath, finishCallback ) => 
+{
+__WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].set( group, filePath, audioData );
+this.loadFromBinaryData( group, id, audioData, filePath, finishCallback );
+});
+}
+else
+{
+this.loadFromBinaryData( group, id, __WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].get( group, filePath), filePath );
+}
+}
+let playListNode = node.getElementsByTagName( 'playList' );
+if( playListNode.length )
+{
+let groupMap = new Map;
+this.playListMapMap.set( group, groupMap );
+for( let i = 0; i < playListNode.length; ++i )
+{
+let id = playListNode[i].getAttribute( 'id' );
+if( groupMap.has(id) )
+throw new Error( `Duplicate playlist group id (${id}, ${group}, ${filePath})!` );
+let playLst = new __WEBPACK_IMPORTED_MODULE_2__common_playlist__["a" ];
+groupMap.set( id, playLst );
+playLst.loadFromNode( playListNode[i], this.soundMapMap.get( group ), group, filePath );
+}
+}
+}
+loadFromBinaryData( group, id, audioData, filePath, finishCallback )
+{
+++this.loadCounter;
+let groupMap = this.soundMapMap.get( group );
+let sound = groupMap.get( id );
+this.context.decodeAudioData( audioData,
+(soundBuffer) =>
+{
+sound.init( this.context, soundBuffer );
+--this.loadCounter;
+if( this.loadCounter === 0 )
+finishCallback();
+},
+(error) => console.log(`Error decoding audio data (${error.err})!`) );
+}
+freeGroup( groupAry )
+{
+for( let grp = 0; grp < groupAry.length; ++grp )
+{
+let group = groupAry[grp];
+if( this.listTableMap.get( group ) === undefined )
+throw new Error( `Sound group name can't be found (${group})!` );
+let groupMap = this.soundMapMap.get( group );
+for( let [ key, sound ] of groupMap.entries() )
+sound.stop();
+if( this.soundMapMap.has( group ) )
+this.soundMapMap.delete( group );
+if( this.playListMapMap.has( group ) )
+this.playListMapMap.delete( group );
+}
+}
+getSound( group, soundID )
+{
+let playLst = this.getPlayList( group, soundID );
+if( playLst )
+{
+return playLst.getSound();
+}
+let groupMap = this.soundMapMap.get( group );
+if( !groupMap )
+throw new Error( `Sound group name can't be found (${group})!` );
+let snd = groupMap.get( soundID );
+if( !snd )
+throw new Error( `Sound ID can't be found (${group}, ${soundID})!` );
+return snd;
+}
+getPlayList( group, playLstID )
+{
+let groupMap = this.playListMapMap.get( group );
+if( groupMap )
+{
+return groupMap.get( playLstID );
+}
+return undefined;
+}
+play( group, soundID, loop = false )
+{
+this.getSound( group, soundID ).play( loop );
+}
+pause( group, soundID )
+{
+this.getSound( group, soundID ).pause();
+}
+resume( group, soundID )
+{
+this.getSound( group, soundID ).resume();
+}
+stop( group, soundID )
+{
+this.getSound( group, soundID ).stop();
+}
+setVolume( group, soundID, volume )
+{
+this.getSound( group, soundID ).setVolume( volume );
+}
+getVolume( group, soundID )
+{
+return this.getSound( group, soundID ).getVolume();
+}
+isPlaying( group, soundID )
+{
+return this.getSound( group, soundID ).isPlaying();
+}
+isPaused( group, soundID )
+{
+return this.getSound( group, soundID ).isPaused();
+}
+}
+var soundManager = new SoundManager;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__statemessage__ = __webpack_require__(117);
+const GAME_STATE_NULL               = 0,
+GAME_STATE_STARTUP            = 1,
+GAME_STATE_TITLESCREEN        = 2,
+GAME_STATE_LOAD               = 3,
+GAME_STATE_PACHINKO_CHALLENGE = 4,
+GAME_STATE_BIG_PAY_BACK       = 5,
+GAME_STATE_WHEEL_DEMO         = 6;
+__webpack_exports__["d"] = GAME_STATE_STARTUP;
+__webpack_exports__["e"] = GAME_STATE_TITLESCREEN;
+__webpack_exports__["b"] = GAME_STATE_LOAD;
+__webpack_exports__["c"] = GAME_STATE_PACHINKO_CHALLENGE;
+__webpack_exports__["a"] = GAME_STATE_BIG_PAY_BACK;
+__webpack_exports__["f"] = GAME_STATE_WHEEL_DEMO;
+class GameState
+{
+constructor( gameState, nextState, callback )
+{
+this.stateChange = false;
+this.gameState = gameState;
+this.nextState = nextState;
+this.callback = callback;
+this.stateMessage = new __WEBPACK_IMPORTED_MODULE_0__statemessage__["a" ];
+}
+getLoadState( loadStateStr )
+{
+if( loadStateStr === 'title_screen_state' )
+return GAME_STATE_TITLESCREEN;
+else if( loadStateStr === 'pachinko_challenge_state' )
+return GAME_STATE_PACHINKO_CHALLENGE;
+else if( loadStateStr === 'big_pay_back_state' )
+return GAME_STATE_BIG_PAY_BACK;
+else if( loadStateStr === 'wheel_demo_state' )
+return GAME_STATE_WHEEL_DEMO;
+throw new Error( `State does not exist!. (${loadStateStr})` );
+}
+init()
+{
+}
+cleanUp()
+{
+}
+handleEvent( event )
+{
+}
+doStateChange()
+{
+return this.stateChange;
+}
+miscProcess()
+{
+}
+physics()
+{
+}
+update()
+{
+}
+transform()
+{
+}
+preRender()
+{
+}
+postRender()
+{
+}
+}
+__webpack_exports__["g"] = GameState;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.d(__webpack_exports__, "a", function() { return shaderManager; });
+var __WEBPACK_IMPORTED_MODULE_0__common_shaderdata__ = __webpack_require__(82);
+var __WEBPACK_IMPORTED_MODULE_1__system_device__ = __webpack_require__(5);
+var __WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__ = __webpack_require__(7);
+class ShaderManager
+{
+constructor()
+{
+this.shaderMap = new Map;
+this.currentShaderData = null;
+this.currentAttributeCount = 0;
+this.loadCompleteCallback = null;
+this.loadCounter = 0;
+this.initShaderCallback = null;
+}
+load( xmlNode, callback )
+{
+if( xmlNode )
+{
+let shader = xmlNode.getElementsByTagName('shader');
+if( shader )
+{
+this.loadCompleteCallback = callback;
+for( let i = 0; i < shader.length; ++i )
+{
+++this.loadCounter;
+this.createShader( shader[i] );
+}
+}
+}
+}
+createShader( node )
+{
+let shaderTxtId = node.getAttribute('Id');
+let vertexNode = node.getElementsByTagName('vertDataLst');
+let fragmentNode = node.getElementsByTagName('fragDataLst');
+if( this.shaderMap.has(shaderTxtId) )
+throw new Error( `Shader of this name already exists (${shaderTxtId}).` );
+let shaderData = new __WEBPACK_IMPORTED_MODULE_0__common_shaderdata__["a" ];
+this.shaderMap.set( shaderTxtId, shaderData );
+__WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__["b" ]( 'txt', vertexNode[0].getAttribute('file'),
+( vertText ) =>
+{
+this.create( __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VERTEX_SHADER, shaderData, shaderTxtId, vertText );
+__WEBPACK_IMPORTED_MODULE_2__utilities_genfunc__["b" ]( 'txt', fragmentNode[0].getAttribute('file'),
+( fragText ) =>
+{
+this.create( __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].FRAGMENT_SHADER, shaderData, shaderTxtId, fragText );
+this.createProgram( shaderData );
+this.locateShaderVariables( shaderData, vertexNode[0].getElementsByTagName('dataType'), fragmentNode[0].getElementsByTagName('dataType') );
+this.initShaderCallback( shaderTxtId );
+--this.loadCounter;
+if( this.loadCounter === 0 )
+this.loadCompleteCallback();
+});
+});
+}
+create( shaderType, shaderData, shaderTxtId, shaderTxt )
+{
+let id = __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].createShader(shaderType);
+if( id === 0 )
+throw new Error( `Error creating shader (${shaderTxtId}).` );
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].shaderSource(id, shaderTxt);
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].compileShader(id);
+if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getShaderParameter(id, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].COMPILE_STATUS) )
+throw new Error( `ERROR compiling shader! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getShaderInfoLog(id)}).` );
+if( shaderType === __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VERTEX_SHADER )
+shaderData.vertexId = id;
+else
+shaderData.fragmentId = id;
+}
+createProgram( shaderData )
+{
+shaderData.programId = __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].createProgram();
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].attachShader( shaderData.programId, shaderData.vertexId );
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].attachShader( shaderData.programId, shaderData.fragmentId );
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].linkProgram( shaderData.programId );
+if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramParameter( shaderData.programId, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].LINK_STATUS ) )
+throw new Error( `ERROR linking program! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramInfoLog(shaderData.programId)}).` );
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].validateProgram( shaderData.programId );
+if( !__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramParameter( shaderData.programId, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].VALIDATE_STATUS ) )
+throw new Error( `ERROR validating program! (${__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getProgramInfoLog(shaderData.programId)}).` );
+}
+locateShaderVariables( shaderData, vertNode, fragNode )
+{
+for( let i = 0; i < vertNode.length; ++i )
+{
+let name = vertNode[i].getAttribute('name');
+if( vertNode[i].getAttribute('location') )
+{
+shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getAttribLocation(shaderData.programId, name) );
+++shaderData.attributeCount;
+}
+else
+{
+shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getUniformLocation(shaderData.programId, name) );
+}
+}
+for( let i = 0; i < fragNode.length; ++i )
+{
+let name = fragNode[i].getAttribute('name');
+shaderData.locationMap.set( name, __WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].getUniformLocation(shaderData.programId, name) );
+}
+}
+bind( shaderData )
+{
+if( this.currentShaderData != shaderData )
+{
+let gl = __WEBPACK_IMPORTED_MODULE_1__system_device__["a" ].glContext;
+if( this.currentShaderData === null )
+{
+this.currentAttributeCount = shaderData.attributeCount;
+for( let i = 0; i < this.currentAttributeCount; ++i )
+gl.enableVertexAttribArray(i);
+}
+else if( this.currentAttributeCount != shaderData.attributeCount )
+{
+if( this.currentAttributeCount < shaderData.attributeCount )
+{
+for( let i = this.currentAttributeCount; i < shaderData.attributeCount; ++i )
+gl.enableVertexAttribArray(i);
+}
+else
+{
+for( let i = shaderData.attributeCount; i < this.currentAttributeCount; ++i )
+gl.disableVertexAttribArray(i);
+}
+this.currentAttributeCount = shaderData.attributeCount;
+}
+this.currentShaderData = shaderData;
+gl.useProgram( shaderData.programId );
+}
+}
+unbind()
+{
+for( let i = 0; i < this.currentAttributeCount; ++i )
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].disableVertexAttribArray(i);
+this.currentShaderData = null;
+this.currentAttributeCount = 0;
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].useProgram( null );
+}
+getShaderData( shaderId )
+{
+let shader = this.shaderMap.get( shaderId );
+if( shader !== undefined )
+return shader;
+else
+throw new Error( `ERROR Shader has not been created! (${shaderId}).` );
+return null;
+}
+setShaderValue4fv( shaderId, locationId, data )
+{
+let shaderData = this.getShaderData( shaderId );
+if( shaderData.hasLocation( locationId ) )
+{
+let location = shaderData.getLocation( locationId );
+this.bind( shaderData );
+__WEBPACK_IMPORTED_MODULE_1__system_device__["b" ].uniform4fv( location, data );
+this.unbind();
+}
+}
+setAllShaderValue4fv( locationId, data )
+{
+for( let [ key, shaderData ] of this.shaderMap.entries() )
+this.setShaderValue4fv( key, locationId, data );
+}
+}
+var shaderManager = new ShaderManager;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+class ScriptComponent
+{
+constructor()
+{
+this.scriptAry = [];
+}
+set( script )
+{
+this.scriptAry.push( script );
+}
+update()
+{
+for( let i = this.scriptAry.length - 1; i > -1; --i )
+{
+this.scriptAry[i].execute();
+if( this.scriptAry[i].isFinished() )
+this.scriptAry.splice( i, 1 );
+}
+}
+isActive()
+{
+return (this.scriptAry.length > 0);
+}
+reset()
+{
+this.scriptAry = [];
+}
+}
+__webpack_exports__["a"] = ScriptComponent;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__controlbase__ = __webpack_require__(98);
 var __WEBPACK_IMPORTED_MODULE_1__scrollparam__ = __webpack_require__(53);
 var __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_3__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_4__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_4__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_5__common_quad__ = __webpack_require__(58);
-var __WEBPACK_IMPORTED_MODULE_6__common_rect__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_6__common_rect__ = __webpack_require__(27);
 var __WEBPACK_IMPORTED_MODULE_7__utilities_matrix__ = __webpack_require__(16);
 var __WEBPACK_IMPORTED_MODULE_8__utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_9__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_10__managers_eventmanager__ = __webpack_require__(8);
-var __WEBPACK_IMPORTED_MODULE_11__managers_actionmanager__ = __webpack_require__(39);
-var __WEBPACK_IMPORTED_MODULE_12__script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_10__managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_11__managers_actionmanager__ = __webpack_require__(42);
+var __WEBPACK_IMPORTED_MODULE_12__script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_13__script_scriptmanager__ = __webpack_require__(13);
 var __WEBPACK_IMPORTED_MODULE_14__utilities_xmlparsehelper__ = __webpack_require__(12);
 var __WEBPACK_IMPORTED_MODULE_15__common_defs__ = __webpack_require__(0);
@@ -3309,11 +3590,9 @@ loadSpriteFromNode( node, fontSpriteCount )
 let objectName = node.getAttribute( 'objectName' );
 let sprite = new __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__["a" ]( __WEBPACK_IMPORTED_MODULE_9__objectdatamanager_objectdatamanager__["a" ].getData( this.group, objectName ) );
 this.spriteAry.push( sprite );
-sprite.loadTransFromNode( node );
-sprite.initScriptFactoryFunctions( node );
+sprite.load( node );
 if( sprite.visualComponent.isFontSprite() )
 {
-sprite.visualComponent.loadFontPropFromNode( node );
 if( this.stringAry.length && (fontSpriteCount[0] < this.stringAry.length) && (sprite.visualComponent.fontData.fontString === '' ) )
 {
 sprite.visualComponent.setFontString( this.stringAry[ fontSpriteCount[0] ] );
@@ -3818,238 +4097,59 @@ __webpack_exports__["a"] = UIControl;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return soundManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
-var __WEBPACK_IMPORTED_MODULE_1__common_sound__ = __webpack_require__(100);
-var __WEBPACK_IMPORTED_MODULE_2__common_playlist__ = __webpack_require__(101);
-var __WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__ = __webpack_require__(10);
-class SoundManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
+__webpack_require__.d(__webpack_exports__, "a", function() { return betManager; });
+class BetManager
 {
 constructor()
 {
-super();
-this.context = null;
-if( typeof AudioContext !== 'undefined' )
-this.context = new AudioContext();
-else if( typeof webkitAudioContext !== 'undefined' ) 
-this.context = new webkitAudioContext();
-else
-throw new Error('AudioContext not supported.');
-this.soundMapMap = new Map;
-this.playListMapMap = new Map;
+this.lineBet = 0;
+this.totalBet = 0;
+this.totalLines = 0;
+this.credits = 0;
 }
-loadGroup( groupAry, finishCallback )
+setLineBet( lineBet )
 {
-super.loadGroup( 'Sound', this.soundMapMap, groupAry, finishCallback );
+this.lineBet = lineBet;
 }
-loadFromNode( group, node, filePath, finishCallback )
+setTotalLines( totalLines )
 {
-let groupMap = this.soundMapMap.get( group );
-let loadFilesNode = node.getElementsByTagName( 'load' );
-for( let i = 0; i < loadFilesNode.length; ++i )
-{
-let id = loadFilesNode[i].getAttribute( 'id' );
-let filePath = loadFilesNode[i].getAttribute( 'file' );
-if( groupMap.has(id) )
-throw new Error( `Duplicate sound group id (${id}, ${group}, ${filePath})!` );
-let snd = new __WEBPACK_IMPORTED_MODULE_1__common_sound__["a" ];
-groupMap.set( id, snd );
-snd.loadFromNode( loadFilesNode[i] );
-if( !__WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].has( group, filePath ) )
-{
-this.downloadFile( 'binary', group, filePath, finishCallback,
-( group, audioData, filePath, finishCallback ) => 
-{
-__WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].set( group, filePath, audioData );
-this.loadFromBinaryData( group, id, audioData, filePath, finishCallback );
-});
+this.totalLines = totalLines;
 }
-else
+getTotalBet()
 {
-this.loadFromBinaryData( group, id, __WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__["a" ].get( group, filePath), filePath );
+return this.lineBet * this.totalLines;
+}
+setCredits( credits )
+{
+this.credits = credits;
+}
+getCredits()
+{
+return this.credits;
+}
+allowPlay()
+{
+return ((this.credits > 0) && (this.credits >= this.getTotalBet()));
+}
+deductBet()
+{
+if( this.allowPlay() )
+this.credits -= this.getTotalBet();
+}
+addAward( award )
+{
+this.credits += award;
 }
 }
-let playListNode = node.getElementsByTagName( 'playList' );
-if( playListNode.length )
-{
-let groupMap = new Map;
-this.playListMapMap.set( group, groupMap );
-for( let i = 0; i < playListNode.length; ++i )
-{
-let id = playListNode[i].getAttribute( 'id' );
-if( groupMap.has(id) )
-throw new Error( `Duplicate playlist group id (${id}, ${group}, ${filePath})!` );
-let playLst = new __WEBPACK_IMPORTED_MODULE_2__common_playlist__["a" ];
-groupMap.set( id, playLst );
-playLst.loadFromNode( playListNode[i], this.soundMapMap.get( group ), group, filePath );
-}
-}
-}
-loadFromBinaryData( group, id, audioData, filePath, finishCallback )
-{
-++this.loadCounter;
-let groupMap = this.soundMapMap.get( group );
-let sound = groupMap.get( id );
-this.context.decodeAudioData( audioData,
-(soundBuffer) =>
-{
-sound.init( this.context, soundBuffer );
---this.loadCounter;
-if( this.loadCounter === 0 )
-finishCallback();
-},
-(error) => console.log(`Error decoding audio data (${error.err})!`) );
-}
-freeGroup( groupAry )
-{
-for( let grp = 0; grp < groupAry.length; ++grp )
-{
-let group = groupAry[grp];
-if( this.listTableMap.get( group ) === undefined )
-throw new Error( `Sound group name can't be found (${group})!` );
-let groupMap = this.soundMapMap.get( group );
-for( let [ key, sound ] of groupMap.entries() )
-sound.stop();
-if( this.soundMapMap.has( group ) )
-this.soundMapMap.delete( group );
-if( this.playListMapMap.has( group ) )
-this.playListMapMap.delete( group );
-}
-}
-getSound( group, soundID )
-{
-let playLst = this.getPlayList( group, soundID );
-if( playLst )
-{
-return playLst.getSound();
-}
-let groupMap = this.soundMapMap.get( group );
-if( !groupMap )
-throw new Error( `Sound group name can't be found (${group})!` );
-let snd = groupMap.get( soundID );
-if( !snd )
-throw new Error( `Sound ID can't be found (${group}, ${soundID})!` );
-return snd;
-}
-getPlayList( group, playLstID )
-{
-let groupMap = this.playListMapMap.get( group );
-if( groupMap )
-{
-return groupMap.get( playLstID );
-}
-return undefined;
-}
-play( group, soundID, loop = false )
-{
-this.getSound( group, soundID ).play( loop );
-}
-pause( group, soundID )
-{
-this.getSound( group, soundID ).pause();
-}
-resume( group, soundID )
-{
-this.getSound( group, soundID ).resume();
-}
-stop( group, soundID )
-{
-this.getSound( group, soundID ).stop();
-}
-setVolume( group, soundID, volume )
-{
-this.getSound( group, soundID ).setVolume( volume );
-}
-getVolume( group, soundID )
-{
-return this.getSound( group, soundID ).getVolume();
-}
-isPlaying( group, soundID )
-{
-return this.getSound( group, soundID ).isPlaying();
-}
-isPaused( group, soundID )
-{
-return this.getSound( group, soundID ).isPaused();
-}
-}
-var soundManager = new SoundManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__statemessage__ = __webpack_require__(110);
-const GAME_STATE_NULL               = 0,
-GAME_STATE_STARTUP            = 1,
-GAME_STATE_TITLESCREEN        = 2,
-GAME_STATE_LOAD               = 3,
-GAME_STATE_PACHINKO_CHALLENGE = 4,
-GAME_STATE_BIG_PAY_BACK       = 5;
-__webpack_exports__["d"] = GAME_STATE_STARTUP;
-__webpack_exports__["e"] = GAME_STATE_TITLESCREEN;
-__webpack_exports__["b"] = GAME_STATE_LOAD;
-__webpack_exports__["c"] = GAME_STATE_PACHINKO_CHALLENGE;
-__webpack_exports__["a"] = GAME_STATE_BIG_PAY_BACK;
-class GameState
-{
-constructor( gameState, nextState, callback )
-{
-this.stateChange = false;
-this.gameState = gameState;
-this.nextState = nextState;
-this.callback = callback;
-this.stateMessage = new __WEBPACK_IMPORTED_MODULE_0__statemessage__["a" ];
-}
-getLoadState( loadStateStr )
-{
-if( loadStateStr === 'title_screen_state' )
-return GAME_STATE_TITLESCREEN;
-else if( loadStateStr === 'pachinko_challenge_state' )
-return GAME_STATE_PACHINKO_CHALLENGE;
-else if( loadStateStr === 'big_pay_back_state' )
-return GAME_STATE_BIG_PAY_BACK;
-throw new Error( `State does not exist!. (${loadStateStr})` );
-}
-init()
-{
-}
-cleanUp()
-{
-}
-handleEvent( event )
-{
-}
-doStateChange()
-{
-return this.stateChange;
-}
-miscProcess()
-{
-}
-physics()
-{
-}
-update()
-{
-}
-transform()
-{
-}
-preRender()
-{
-}
-postRender()
-{
-}
-}
-__webpack_exports__["f"] = GameState;
+var betManager = new BetManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return vertexBufferManager; });
 var __WEBPACK_IMPORTED_MODULE_0__system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_2__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_3__common_quad2d__ = __webpack_require__(74);
+var __WEBPACK_IMPORTED_MODULE_3__common_quad2d__ = __webpack_require__(81);
 class VertexBufferManager
 {
 constructor()
@@ -4441,86 +4541,6 @@ __webpack_exports__["a"] = ManagerBase;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-class ScriptComponent
-{
-constructor()
-{
-this.scriptAry = [];
-}
-set( script )
-{
-this.scriptAry.push( script );
-}
-update()
-{
-for( let i = this.scriptAry.length - 1; i > -1; --i )
-{
-this.scriptAry[i].execute();
-if( this.scriptAry[i].isFinished() )
-this.scriptAry.splice( i, 1 );
-}
-}
-isActive()
-{
-return (this.scriptAry.length > 0);
-}
-reset()
-{
-this.scriptAry = [];
-}
-}
-__webpack_exports__["a"] = ScriptComponent;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return betManager; });
-class BetManager
-{
-constructor()
-{
-this.lineBet = 0;
-this.totalBet = 0;
-this.totalLines = 0;
-this.credits = 0;
-}
-setLineBet( lineBet )
-{
-this.lineBet = lineBet;
-}
-setTotalLines( totalLines )
-{
-this.totalLines = totalLines;
-}
-getTotalBet()
-{
-return this.lineBet * this.totalLines;
-}
-setCredits( credits )
-{
-this.credits = credits;
-}
-getCredits()
-{
-return this.credits;
-}
-allowPlay()
-{
-return ((this.credits > 0) && (this.credits >= this.getTotalBet()));
-}
-deductBet()
-{
-if( this.allowPlay() )
-this.credits -= this.getTotalBet();
-}
-addAward( award )
-{
-this.credits += award;
-}
-}
-var betManager = new BetManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
 class Timer
 {
 constructor( interval = 0, startExpired = false )
@@ -4606,6 +4626,165 @@ var loadManager = new LoadManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
+var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(34);
+var __WEBPACK_IMPORTED_MODULE_1__common_fontdata__ = __webpack_require__(54);
+var __WEBPACK_IMPORTED_MODULE_2__script_scriptmanager__ = __webpack_require__(13);
+var __WEBPACK_IMPORTED_MODULE_3__common_defs__ = __webpack_require__(0);
+class SpriteData extends __WEBPACK_IMPORTED_MODULE_0__common_object__["a" ]
+{
+constructor( node, defGroup, defObjName, defAIName, defId = __WEBPACK_IMPORTED_MODULE_3__common_defs__["_67" ] )
+{
+super();
+this.parameters.add( __WEBPACK_IMPORTED_MODULE_3__common_defs__["_66" ] );
+this.fontData = null;
+this.name = null;
+this.group = defGroup;
+this.objectName = defObjName;
+this.aiName = defAIName;
+this.id = defId;
+this.scriptFunctionMap = new Map;
+let attr = node.getAttribute( "name" );
+if( attr )
+this.name = attr;
+attr = node.getAttribute( "group" );
+if( attr )
+this.group = attr;
+attr = node.getAttribute( "objectName" );
+if( attr )
+this.objectName = attr;
+attr = node.getAttribute( "aiName" );
+if( attr )
+this.aiName = attr;
+attr = node.getAttribute( "id" );
+if( attr )
+this.id = Number(attr);
+attr = node.getAttribute( 'visible' );
+if( attr )
+this.setVisible( attr === 'true' );
+let fontNode = node.getElementsByTagName( 'font' );
+if( fontNode.length )
+{
+this.fontData = new __WEBPACK_IMPORTED_MODULE_1__common_fontdata__["a" ];
+this.fontData.loadFromNode( node );
+}
+this.loadTransFromNode( node );
+this.loadScriptFunctions( node );
+}
+copy( obj )
+{
+this.group = obj.group;
+this.objectName = obj.objectName;
+this.aiName = obj.aiName;
+this.id = obj.id;
+copyTransform( obj );
+if( this.fontData )
+this.fontData.copy( obj.fontData );
+for( let [ key, scriptFactory ] of obj.scriptFunctionMap.entries() )
+this.scriptFunctionMap.set( key, scriptFactory );
+}
+loadScriptFunctions( node )
+{
+let scriptNode = node.getElementsByTagName( 'script' );
+for( let i = 0; i < scriptNode.length; ++i )
+{
+let attr = scriptNode[i].attributes[0];
+if( attr )
+this.scriptFunctionMap.set( attr.name, __WEBPACK_IMPORTED_MODULE_2__script_scriptmanager__["a" ].get(attr.value) );
+}
+}
+}
+__webpack_exports__["a"] = SpriteData;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.d(__webpack_exports__, "a", function() { return spriteStrategyManager; });
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
+var __WEBPACK_IMPORTED_MODULE_1__utilities_assetholder__ = __webpack_require__(10);
+class SpriteStrategyManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
+{
+constructor()
+{
+super();
+this.strategyMap = new Map;
+this.spriteInc = 0;
+}
+load( strategyId, spriteStrategy, finishCallback )
+{
+if( this.strategyMap.has( strategyId ) )
+throw new Error( `Duplicate strategy id (${strategyId})!` );
+this.strategyMap.set( strategyId, spriteStrategy );
+super.load( strategyId, finishCallback );
+}
+loadFromNode( strategyId, node, filePath, finishCallback )
+{
+let strategy = this.strategyMap.get( strategyId );
+strategy.loadFromNode( strategyId, node, filePath, this.downloadFile.bind(this), finishCallback );
+}
+get( strategyId )
+{
+let strategy = this.strategyMap.get( strategyId );
+if( !strategy )
+throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
+return strategy;
+}
+createGroup( strategyId, name, count, pos, rot, scale )
+{
+let strategy = this.strategyMap.get( strategyId );
+if( !strategy )
+throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
+let incReturn = [];
+for( let i = 0; i < count; ++i )
+incReturn.push( strategy.create( name, ++this.spriteInc, pos, rot, scale ) );
+return incReturn;
+}
+create( strategyId, name, pos, rot, scale )
+{
+let strategy = this.strategyMap.get( strategyId );
+if( !strategy )
+throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
+return strategy.create( name, ++this.spriteInc, pos, rot, scale );
+}
+clear()
+{
+this.cleanUp();
+this.strategyMap.clear();
+this.spriteInc = 0;
+}
+init()
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.init();
+}
+cleanUp()
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.cleanUp();
+}
+miscProcess()
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.miscProcess();
+}
+update()
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.update();
+}
+transform( object = null )
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.transform( object );
+}
+render( matrix )
+{
+for( let [ key, strategy ] of this.strategyMap.entries() )
+strategy.render( matrix );
+}
+}
+var spriteStrategyManager = new SpriteStrategyManager;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
 class Vertex2d
 {
 constructor( x = 0, y = 0, z = 0, u = 0, v = 0 )
@@ -4627,9 +4806,9 @@ __webpack_exports__["a"] = Vertex2d;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_1__size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_2__utilities_bitmask__ = __webpack_require__(37);
+var __WEBPACK_IMPORTED_MODULE_2__utilities_bitmask__ = __webpack_require__(40);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_xmlparsehelper__ = __webpack_require__(12);
 var __WEBPACK_IMPORTED_MODULE_4__common_defs__ = __webpack_require__(0);
 class Object
@@ -4779,9 +4958,9 @@ __webpack_exports__["a"] = Object;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__gui_uicontrolnavnode__ = __webpack_require__(57);
-var __WEBPACK_IMPORTED_MODULE_2__uicontrolfactory__ = __webpack_require__(40);
+var __WEBPACK_IMPORTED_MODULE_2__uicontrolfactory__ = __webpack_require__(43);
 var __WEBPACK_IMPORTED_MODULE_3__common_defs__ = __webpack_require__(0);
 class UISubControl extends __WEBPACK_IMPORTED_MODULE_0__uicontrol__["a" ]
 {
@@ -5161,167 +5340,240 @@ __webpack_exports__["a"] = UISubControl;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return spriteStrategyManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
+__webpack_require__.d(__webpack_exports__, "a", function() { return slotMathManager; });
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_assetholder__ = __webpack_require__(10);
-class SpriteStrategyManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
+var __WEBPACK_IMPORTED_MODULE_2__slotmath__ = __webpack_require__(109);
+var __WEBPACK_IMPORTED_MODULE_3__paylineset__ = __webpack_require__(116);
+class SlotMathManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
 {
 constructor()
 {
 super();
-this.strategyMap = new Map;
-this.spriteInc = 0;
+this.slotMathMapMap = new Map;
+this.paylineSetMap = new Map;
 }
-load( strategyId, spriteStrategy, finishCallback )
+getSlotMath( group, id )
 {
-if( this.strategyMap.has( strategyId ) )
-throw new Error( `Duplicate strategy id (${strategyId})!` );
-this.strategyMap.set( strategyId, spriteStrategy );
-super.load( strategyId, finishCallback );
+let groupMap = this.slotMathMapMap.get( group );
+if( groupMap !== undefined )
+{
+let slotMath = groupMap.get( id );
+if( slotMath )
+return slotMath;
+else
+throw new Error( `Slot Math name can't be found (${group}, ${name})!` );
 }
-loadFromNode( strategyId, node, filePath, finishCallback )
-{
-let strategy = this.strategyMap.get( strategyId );
-strategy.loadFromNode( strategyId, node, filePath, this.downloadFile.bind(this), finishCallback );
+else
+throw new Error( `Slot Math group can't be found (${group}, ${name})!` );
+return null;
 }
-get( strategyId )
+loadGroup( groupAry, finishCallback )
 {
-let strategy = this.strategyMap.get( strategyId );
-if( !strategy )
-throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
-return strategy;
+super.loadGroup( 'Slot math', this.slotMathMapMap, groupAry, finishCallback );
 }
-createGroup( strategyId, name, count, pos, rot, scale )
+loadFromNode( group, node, filePath, finishCallback )
 {
-let strategy = this.strategyMap.get( strategyId );
-if( !strategy )
-throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
-let incReturn = [];
-for( let i = 0; i < count; ++i )
-incReturn.push( strategy.create( name, ++this.spriteInc, pos, rot, scale ) );
-return incReturn;
+let id = node.getAttribute( "id" );
+let groupMap = this.slotMathMapMap.get( group );
+if( groupMap.has(id) )
+throw new Error( `Duplicate math group id (${id}, ${group}, ${filePath})!` );
+let slotMath = new __WEBPACK_IMPORTED_MODULE_2__slotmath__["a" ](group, id);
+groupMap.set( id, slotMath );
+slotMath.loadFromNode( node );
 }
-create( strategyId, name, pos, rot, scale )
+loadPaylineSetFromNode( node )
 {
-let strategy = this.strategyMap.get( strategyId );
-if( !strategy )
-throw new Error( `Sprite Manager strategy Id can't be found (${strategyId})!` );
-return strategy.create( name, ++this.spriteInc, pos, rot, scale );
+let paylineSetNode = node.children;
+for( let i = 0; i < paylineSetNode.length; ++i )
+{
+let id = paylineSetNode[i].getAttribute( 'id' );
+if( this.paylineSetMap.has( id ) )
+throw new Error( `Duplicate payline set id (${id}, ${this.group})!` );
+let payline = new __WEBPACK_IMPORTED_MODULE_3__paylineset__["a" ];
+this.paylineSetMap.set( id, payline );
+let lineNode = paylineSetNode[i].getElementsByTagName( 'line' );
+for( let j = 0; j < lineNode.length; ++j )
+{
+let lineAry = [];
+payline.line.push( lineAry );
+for( let w = 0; w < lineNode[j].attributes.length; ++w )
+lineAry.push( Number(lineNode[j].attributes[w].value) );
+}
+let scatterNode = paylineSetNode[i].getElementsByTagName( 'scatter' );
+for( let j = 0; j < scatterNode.length; ++j )
+{
+let scatterAry = [];
+payline.scatter.push( scatterAry );
+for( let w = 0; w < scatterNode[j].attributes.length; ++w )
+scatterAry.push( Number(scatterNode[j].attributes[w].value) );
+}
+}
+}
+getPaylineSet( id )
+{
+let paylineSet = this.paylineSetMap.get( id );
+if( !paylineSet )
+throw new Error( `Payline Set id can't be found (${this.group}, ${id})!` );
+return paylineSet;
+}
+freeGroup( groupAry )
+{
+for( let grp = 0; grp < groupAry.length; ++grp )
+{
+let group = groupAry[grp];
+if( this.listTableMap.get( group ) === undefined )
+throw new Error( `Slot math group name can't be found (${group})!` );
+if( this.slotMathMapMap.has( group ) )
+this.slotMathMapMap.delete( group );
+}
+}
+freePaylineSet()
+{
+this.paylineSetMap.clear();
 }
 clear()
 {
-this.cleanUp();
-this.strategyMap.clear();
-this.spriteInc = 0;
+this.freePaylineSet();
+this.slotMathMapMap.clear();
 }
-init()
-{
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.init();
 }
-cleanUp()
+var slotMathManager = new SlotMathManager;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__gamestate__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_2__library_system_device__ = __webpack_require__(5);
+var __WEBPACK_IMPORTED_MODULE_3__library_common_defs__ = __webpack_require__(0);
+class CommonState extends __WEBPACK_IMPORTED_MODULE_0__gamestate__["g" ]
 {
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.cleanUp();
+constructor( gameState, nextState, callBack )
+{
+super( gameState, nextState, callBack );
 }
-miscProcess()
+handleEvent( event )
 {
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.miscProcess();
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].handleEvent( event );
+if( event instanceof CustomEvent )
+{
+if( event.detail.type === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_0" ] )
+{
+if( event.detail.arg[0] === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_54" ] )
+{
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].allowEventHandling = false;
+this.stateMessage.setMsg( this.getLoadState(event.detail.arg[1]), this.gameState );
+}
+else if( event.detail.arg[0] === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_55" ] )
+{
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].clearActiveTrees();
+this.stateChange = true;
+}
+}
+}
 }
 update()
 {
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.update();
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].update();
 }
-transform( object = null )
+transform()
 {
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.transform( object );
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].transform();
 }
-render( matrix )
+preRender()
 {
-for( let [ key, strategy ] of this.strategyMap.entries() )
-strategy.render( matrix );
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].renderInterface( __WEBPACK_IMPORTED_MODULE_2__library_system_device__["a" ].orthographicMatrix );
+}
+postRender()
+{
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].render( __WEBPACK_IMPORTED_MODULE_2__library_system_device__["a" ].orthographicMatrix );
 }
 }
-var spriteStrategyManager = new SpriteStrategyManager;
+__webpack_exports__["a"] = CommonState;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(32);
-var __WEBPACK_IMPORTED_MODULE_1__common_fontdata__ = __webpack_require__(54);
-var __WEBPACK_IMPORTED_MODULE_2__script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_3__common_defs__ = __webpack_require__(0);
-class SpriteData extends __WEBPACK_IMPORTED_MODULE_0__common_object__["a" ]
+__webpack_require__.d(__webpack_exports__, "a", function() { return fontManager; });
+var __WEBPACK_IMPORTED_MODULE_0__2d_font__ = __webpack_require__(84);
+var __WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__ = __webpack_require__(7);
+var __WEBPACK_IMPORTED_MODULE_2__managers_texturemanager__ = __webpack_require__(14);
+class FontManager
 {
-constructor( node, defGroup, defObjName, defAIName, defId = __WEBPACK_IMPORTED_MODULE_3__common_defs__["_67" ] )
+constructor()
 {
-super();
-this.parameters.add( __WEBPACK_IMPORTED_MODULE_3__common_defs__["_66" ] );
-this.fontData = null;
-this.name = null;
-this.group = defGroup;
-this.objectName = defObjName;
-this.aiName = defAIName;
-this.id = defId;
-this.scriptFunctionMap = new Map;
-let attr = node.getAttribute( "name" );
-if( attr )
-this.name = attr;
-attr = node.getAttribute( "group" );
-if( attr )
-this.group = attr;
-attr = node.getAttribute( "objectName" );
-if( attr )
-this.objectName = attr;
-attr = node.getAttribute( "aiName" );
-if( attr )
-this.aiName = attr;
-attr = node.getAttribute( "id" );
-if( attr )
-this.id = Number(attr);
-attr = node.getAttribute( 'visible' );
-if( attr )
-this.setVisible( attr === 'true' );
-let fontNode = node.getElementsByTagName( 'font' );
-if( fontNode.length )
-{
-this.fontData = new __WEBPACK_IMPORTED_MODULE_1__common_fontdata__["a" ];
-this.fontData.loadFromNode( node );
+this.fontMap = new Map;
+this.group = '';
+this.loadCompleteCallback = null;
+this.loadCounter = 0;
 }
-this.loadTransFromNode( node );
-this.loadScriptFunctions( node );
+load( node, callback )
+{
+if( node )
+{
+this.loadCompleteCallback = callback;
+let listGroupNode = node.getElementsByTagName('listGroup');
+this.group = listGroupNode[0].getAttribute( 'name' );
+let fontNode = node.getElementsByTagName('font');
+for( let i = 0; i < fontNode.length; ++i )
+{
+let name = fontNode[i].getAttribute( 'name' );
+if( this.fontMap.has( name ) )
+{
+throw new Error( `Font name has already been loaded (${name}).` );
+return;
 }
-copy( obj )
-{
-this.group = obj.group;
-this.objectName = obj.objectName;
-this.aiName = obj.aiName;
-this.id = obj.id;
-copyTransform( obj );
-if( this.fontData )
-this.fontData.copy( obj.fontData );
-for( let [ key, scriptFactory ] of obj.scriptFunctionMap.entries() )
-this.scriptFunctionMap.set( key, scriptFactory );
-}
-loadScriptFunctions( node )
-{
-let scriptNode = node.getElementsByTagName( 'script' );
-for( let i = 0; i < scriptNode.length; ++i )
-{
-let attr = scriptNode[i].attributes[0];
-if( attr )
-this.scriptFunctionMap.set( attr.name, __WEBPACK_IMPORTED_MODULE_2__script_scriptmanager__["a" ].get(attr.value) );
+this.fontMap.set( name, new __WEBPACK_IMPORTED_MODULE_0__2d_font__["a" ] );
+++this.loadCounter;
+this.downloadFontFiles( name, fontNode[i].getAttribute( 'file' ) );
 }
 }
 }
-__webpack_exports__["a"] = SpriteData;
+downloadFontFiles( name, filePath )
+{
+__WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__["b" ]( 'img', filePath + '.png',
+( image ) =>
+{
+__WEBPACK_IMPORTED_MODULE_2__managers_texturemanager__["a" ].load( this.group, name, image );
+__WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__["b" ]( 'xml', filePath + '.fnt',
+( xmlNode ) =>
+{
+this.loadFont( name, xmlNode );
+--this.loadCounter;
+if( this.loadCounter === 0 )
+{
+this.loadCompleteCallback();
+}
+});
+});
+}
+loadFont( name, xmlNode )
+{
+let font = this.fontMap.get( name );
+if( font === undefined )
+throw new Error( `Font name has not been added to the map (${name}).` );
+font.loadFromNode( this.group, name, xmlNode );
+}
+getFont( name )
+{
+let font = this.fontMap.get( name );
+if( font === undefined )
+throw new Error( `Font name can't be found (${name}).` );
+return font;
+}
+isFont( name )
+{
+let font = this.fontMap.get( name );
+if( font === undefined )
+throw new Error( `Font name can't be found (${name}).` );
+}
+get groupName() { return this.group; }
+}
+var fontManager = new FontManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__utilities_bitmask__ = __webpack_require__(37);
-var __WEBPACK_IMPORTED_MODULE_1__point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__utilities_bitmask__ = __webpack_require__(40);
+var __WEBPACK_IMPORTED_MODULE_1__point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_2__size__ = __webpack_require__(1);
 var __WEBPACK_IMPORTED_MODULE_3__common_defs__ = __webpack_require__(0);
 class DynamicOffset
@@ -5428,8 +5680,8 @@ this.m_mass>0&&(this.m_mass=1/this.m_mass),this.m_springMass=0,this.m_bias=0,thi
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return actionManager; });
-var __WEBPACK_IMPORTED_MODULE_0__common_keycodeaction__ = __webpack_require__(85);
-var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__common_keycodeaction__ = __webpack_require__(92);
+var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_2__common_defs__ = __webpack_require__(0);
 class ActionManager
 {
@@ -5655,14 +5907,14 @@ var actionManager = new ActionManager;
 "use strict";
 __webpack_exports__["a"] = create;
 var __WEBPACK_IMPORTED_MODULE_0__managers_signalmanager__ = __webpack_require__(15);
-var __WEBPACK_IMPORTED_MODULE_1__uilabel__ = __webpack_require__(92);
-var __WEBPACK_IMPORTED_MODULE_2__uibutton__ = __webpack_require__(93);
-var __WEBPACK_IMPORTED_MODULE_3__uisubcontrol__ = __webpack_require__(33);
-var __WEBPACK_IMPORTED_MODULE_4__uibuttonlist__ = __webpack_require__(94);
-var __WEBPACK_IMPORTED_MODULE_5__uicheckbox__ = __webpack_require__(95);
-var __WEBPACK_IMPORTED_MODULE_6__uislider__ = __webpack_require__(96);
-var __WEBPACK_IMPORTED_MODULE_7__uiscrollbox__ = __webpack_require__(97);
-var __WEBPACK_IMPORTED_MODULE_8__uimeter__ = __webpack_require__(98);
+var __WEBPACK_IMPORTED_MODULE_1__uilabel__ = __webpack_require__(99);
+var __WEBPACK_IMPORTED_MODULE_2__uibutton__ = __webpack_require__(100);
+var __WEBPACK_IMPORTED_MODULE_3__uisubcontrol__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_4__uibuttonlist__ = __webpack_require__(101);
+var __WEBPACK_IMPORTED_MODULE_5__uicheckbox__ = __webpack_require__(102);
+var __WEBPACK_IMPORTED_MODULE_6__uislider__ = __webpack_require__(103);
+var __WEBPACK_IMPORTED_MODULE_7__uiscrollbox__ = __webpack_require__(104);
+var __WEBPACK_IMPORTED_MODULE_8__uimeter__ = __webpack_require__(105);
 var __WEBPACK_IMPORTED_MODULE_9__uiprogressbar__ = __webpack_require__(59);
 function create( node, group )
 {
@@ -5696,120 +5948,18 @@ return control;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return slotMathManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
-var __WEBPACK_IMPORTED_MODULE_1__utilities_assetholder__ = __webpack_require__(10);
-var __WEBPACK_IMPORTED_MODULE_2__slotmath__ = __webpack_require__(102);
-var __WEBPACK_IMPORTED_MODULE_3__paylineset__ = __webpack_require__(109);
-class SlotMathManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
-{
-constructor()
-{
-super();
-this.slotMathMapMap = new Map;
-this.paylineSetMap = new Map;
-}
-getSlotMath( group, id )
-{
-let groupMap = this.slotMathMapMap.get( group );
-if( groupMap !== undefined )
-{
-let slotMath = groupMap.get( id );
-if( slotMath )
-return slotMath;
-else
-throw new Error( `Slot Math name can't be found (${group}, ${name})!` );
-}
-else
-throw new Error( `Slot Math group can't be found (${group}, ${name})!` );
-return null;
-}
-loadGroup( groupAry, finishCallback )
-{
-super.loadGroup( 'Slot math', this.slotMathMapMap, groupAry, finishCallback );
-}
-loadFromNode( group, node, filePath, finishCallback )
-{
-let id = node.getAttribute( "id" );
-let groupMap = this.slotMathMapMap.get( group );
-if( groupMap.has(id) )
-throw new Error( `Duplicate math group id (${id}, ${group}, ${filePath})!` );
-let slotMath = new __WEBPACK_IMPORTED_MODULE_2__slotmath__["a" ](group, id);
-groupMap.set( id, slotMath );
-slotMath.loadFromNode( node );
-}
-loadPaylineSetFromNode( node )
-{
-let paylineSetNode = node.children;
-for( let i = 0; i < paylineSetNode.length; ++i )
-{
-let id = paylineSetNode[i].getAttribute( 'id' );
-if( this.paylineSetMap.has( id ) )
-throw new Error( `Duplicate payline set id (${id}, ${this.group})!` );
-let payline = new __WEBPACK_IMPORTED_MODULE_3__paylineset__["a" ];
-this.paylineSetMap.set( id, payline );
-let lineNode = paylineSetNode[i].getElementsByTagName( 'line' );
-for( let j = 0; j < lineNode.length; ++j )
-{
-let lineAry = [];
-payline.line.push( lineAry );
-for( let w = 0; w < lineNode[j].attributes.length; ++w )
-lineAry.push( Number(lineNode[j].attributes[w].value) );
-}
-let scatterNode = paylineSetNode[i].getElementsByTagName( 'scatter' );
-for( let j = 0; j < scatterNode.length; ++j )
-{
-let scatterAry = [];
-payline.scatter.push( scatterAry );
-for( let w = 0; w < scatterNode[j].attributes.length; ++w )
-scatterAry.push( Number(scatterNode[j].attributes[w].value) );
-}
-}
-}
-getPaylineSet( id )
-{
-let paylineSet = this.paylineSetMap.get( id );
-if( !paylineSet )
-throw new Error( `Payline Set id can't be found (${this.group}, ${id})!` );
-return paylineSet;
-}
-freeGroup( groupAry )
-{
-for( let grp = 0; grp < groupAry.length; ++grp )
-{
-let group = groupAry[grp];
-if( this.listTableMap.get( group ) === undefined )
-throw new Error( `Slot math group name can't be found (${group})!` );
-if( this.slotMathMapMap.has( group ) )
-this.slotMathMapMap.delete( group );
-}
-}
-freePaylineSet()
-{
-this.paylineSetMap.clear();
-}
-clear()
-{
-this.freePaylineSet();
-this.slotMathMapMap.clear();
-}
-}
-var slotMathManager = new SlotMathManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
 __webpack_exports__["b"] = load;
-var __WEBPACK_IMPORTED_MODULE_0__commonstate__ = __webpack_require__(43);
+var __WEBPACK_IMPORTED_MODULE_0__commonstate__ = __webpack_require__(37);
 var __WEBPACK_IMPORTED_MODULE_1__library_2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_2__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_3__library_managers_shadermanager__ = __webpack_require__(19);
-var __WEBPACK_IMPORTED_MODULE_4__library_gui_menumanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_3__library_managers_shadermanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_4__library_gui_menumanager__ = __webpack_require__(18);
 var __WEBPACK_IMPORTED_MODULE_5__library_system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_6__library_script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_6__library_script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_7__library_utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_8__library_script_scriptmanager__ = __webpack_require__(13);
 var __WEBPACK_IMPORTED_MODULE_9__library_managers_loadmanager__ = __webpack_require__(30);
-var __WEBPACK_IMPORTED_MODULE_10__gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_10__gamestate__ = __webpack_require__(21);
 var __WEBPACK_IMPORTED_MODULE_11__library_common_defs__ = __webpack_require__(0);
 const stateGroup = '(title_screen)';
 class TitleScreenState extends __WEBPACK_IMPORTED_MODULE_0__commonstate__["a" ]
@@ -5887,62 +6037,11 @@ __WEBPACK_IMPORTED_MODULE_9__library_managers_loadmanager__["a" ].add(
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__gamestate__ = __webpack_require__(23);
-var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(20);
-var __WEBPACK_IMPORTED_MODULE_2__library_system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_3__library_common_defs__ = __webpack_require__(0);
-class CommonState extends __WEBPACK_IMPORTED_MODULE_0__gamestate__["f" ]
-{
-constructor( gameState, nextState, callBack )
-{
-super( gameState, nextState, callBack );
-}
-handleEvent( event )
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].handleEvent( event );
-if( event instanceof CustomEvent )
-{
-if( event.detail.type === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_0" ] )
-{
-if( event.detail.arg[0] === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_54" ] )
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].allowEventHandling = false;
-this.stateMessage.setMsg( this.getLoadState(event.detail.arg[1]), this.gameState );
-}
-else if( event.detail.arg[0] === __WEBPACK_IMPORTED_MODULE_3__library_common_defs__["_55" ] )
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].clearActiveTrees();
-this.stateChange = true;
-}
-}
-}
-}
-update()
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].update();
-}
-transform()
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].transform();
-}
-preRender()
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].renderInterface( __WEBPACK_IMPORTED_MODULE_2__library_system_device__["a" ].orthographicMatrix );
-}
-postRender()
-{
-__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].render( __WEBPACK_IMPORTED_MODULE_2__library_system_device__["a" ].orthographicMatrix );
-}
-}
-__webpack_exports__["a"] = CommonState;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
 __webpack_exports__["e"] = loadScripts;
 var __WEBPACK_IMPORTED_MODULE_0__library_utilities_highresolutiontimer__ = __webpack_require__(2);
-var __WEBPACK_IMPORTED_MODULE_1__library_managers_shadermanager__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_1__library_managers_shadermanager__ = __webpack_require__(22);
 var __WEBPACK_IMPORTED_MODULE_2__library_script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_3__library_managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_3__library_managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_4__library_common_color__ = __webpack_require__(17);
 var __WEBPACK_IMPORTED_MODULE_5__library_common_defs__ = __webpack_require__(0);
 class Hold
@@ -6169,8 +6268,8 @@ __webpack_exports__["a"] = iSpriteStrategy;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__2d_spritechild2d__ = __webpack_require__(122);
-var __WEBPACK_IMPORTED_MODULE_1__2d_object2d__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_0__2d_spritechild2d__ = __webpack_require__(128);
+var __WEBPACK_IMPORTED_MODULE_1__2d_object2d__ = __webpack_require__(19);
 var __WEBPACK_IMPORTED_MODULE_2__utilities_matrix__ = __webpack_require__(16);
 var __WEBPACK_IMPORTED_MODULE_3__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_4__common_defs__ = __webpack_require__(0);
@@ -6245,7 +6344,7 @@ __webpack_exports__["a"] = Symbol2d;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(8);
 class SpinProfile
 {
 constructor()
@@ -6328,17 +6427,15 @@ __webpack_exports__["a"] = Texture;
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return meshManager; });
 var __WEBPACK_IMPORTED_MODULE_0__system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(6);
-var __WEBPACK_IMPORTED_MODULE_2__common_uv__ = __webpack_require__(71);
-var __WEBPACK_IMPORTED_MODULE_3__common_meshbinaryfileheader__ = __webpack_require__(72);
-var __WEBPACK_IMPORTED_MODULE_4__common_mesh3d__ = __webpack_require__(73);
+var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_2__common_uv__ = __webpack_require__(78);
+var __WEBPACK_IMPORTED_MODULE_3__common_meshbinaryfileheader__ = __webpack_require__(79);
+var __WEBPACK_IMPORTED_MODULE_4__common_mesh3d__ = __webpack_require__(80);
 class MeshManager
 {
 constructor()
 {
 this.meshBufMapMap = new Map;
-this.currentVBO = null;
-this.currentIBO = null;
 this.counter = 0;
 }
 load( group, filePath, binaryData )
@@ -6532,79 +6629,6 @@ var meshManager = new MeshManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-__webpack_require__.d(__webpack_exports__, "a", function() { return fontManager; });
-var __WEBPACK_IMPORTED_MODULE_0__2d_font__ = __webpack_require__(77);
-var __WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__ = __webpack_require__(7);
-var __WEBPACK_IMPORTED_MODULE_2__managers_texturemanager__ = __webpack_require__(14);
-class FontManager
-{
-constructor()
-{
-this.fontMap = new Map;
-this.group = '';
-this.loadCompleteCallback = null;
-this.loadCounter = 0;
-}
-load( node, callback )
-{
-if( node )
-{
-this.loadCompleteCallback = callback;
-let listGroupNode = node.getElementsByTagName('listGroup');
-this.group = listGroupNode[0].getAttribute( 'name' );
-let fontNode = node.getElementsByTagName('font');
-for( let i = 0; i < fontNode.length; ++i )
-{
-let name = fontNode[i].getAttribute( 'name' );
-if( this.fontMap.has( name ) )
-{
-throw new Error( `Font name has already been loaded (${name}).` );
-return;
-}
-this.fontMap.set( name, new __WEBPACK_IMPORTED_MODULE_0__2d_font__["a" ] );
-++this.loadCounter;
-this.downloadFontFiles( name, fontNode[i].getAttribute( 'file' ) );
-}
-}
-}
-downloadFontFiles( name, filePath )
-{
-__WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__["b" ]( 'img', filePath + '.png',
-( image ) =>
-{
-__WEBPACK_IMPORTED_MODULE_2__managers_texturemanager__["a" ].load( this.group, name, image );
-__WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__["b" ]( 'xml', filePath + '.fnt',
-( xmlNode ) =>
-{
-this.loadFont( name, xmlNode );
---this.loadCounter;
-if( this.loadCounter === 0 )
-{
-this.loadCompleteCallback();
-}
-});
-});
-}
-loadFont( name, xmlNode )
-{
-let font = this.fontMap.get( name );
-if( font === undefined )
-throw new Error( `Font name has not been added to the map (${name}).` );
-font.loadFromNode( this.group, name, xmlNode );
-}
-getFont( name )
-{
-let font = this.fontMap.get( name );
-if( font === undefined )
-throw new Error( `Font name can't be found (${name}).` );
-return font;
-}
-get groupName() { return this.group; }
-}
-var fontManager = new FontManager;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return spriteSheetManager; });
 var __WEBPACK_IMPORTED_MODULE_0__common_spritesheet__ = __webpack_require__(52);
 class SpriteSheetManager
@@ -6639,9 +6663,9 @@ var spriteSheetManager = new SpriteSheetManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_spritesheetglyph__ = __webpack_require__(78);
+var __WEBPACK_IMPORTED_MODULE_0__common_spritesheetglyph__ = __webpack_require__(85);
 var __WEBPACK_IMPORTED_MODULE_1__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_2__common_rect__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_2__common_rect__ = __webpack_require__(27);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_xmlparsehelper__ = __webpack_require__(12);
 class SpriteSheet
 {
@@ -6845,7 +6869,7 @@ __webpack_exports__["a"] = ScrollParam;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__fontproperties__ = __webpack_require__(88);
+var __WEBPACK_IMPORTED_MODULE_0__fontproperties__ = __webpack_require__(95);
 var __WEBPACK_IMPORTED_MODULE_1__size__ = __webpack_require__(1);
 class FontData
 {
@@ -6879,7 +6903,7 @@ __webpack_exports__["a"] = FontData;
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__physicsworldmanager__ = __webpack_require__(56);
 var __WEBPACK_IMPORTED_MODULE_1__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__ = __webpack_require__(38);
+var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__ = __webpack_require__(41);
 var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__);
 class PhysicsComponent2D
 {
@@ -7085,10 +7109,10 @@ __webpack_exports__["a"] = PhysicsComponent2D;
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.d(__webpack_exports__, "a", function() { return physicsWorldManager; });
-var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(26);
+var __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__ = __webpack_require__(28);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_assetholder__ = __webpack_require__(10);
-var __WEBPACK_IMPORTED_MODULE_2__physicsworld2d__ = __webpack_require__(89);
-var __WEBPACK_IMPORTED_MODULE_3__physicsworld3d__ = __webpack_require__(90);
+var __WEBPACK_IMPORTED_MODULE_2__physicsworld2d__ = __webpack_require__(96);
+var __WEBPACK_IMPORTED_MODULE_3__physicsworld3d__ = __webpack_require__(97);
 const LOAD_2D = 0;
 const LOAD_3D = 1;
 class PhysicsWorldManager extends __WEBPACK_IMPORTED_MODULE_0__managers_managerbase__["a" ]
@@ -7167,7 +7191,7 @@ var physicsWorldManager = new PhysicsWorldManager;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 class UIControlNavNode
 {
@@ -7207,7 +7231,7 @@ __webpack_exports__["a"] = UIControlNavNode;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__common_point__ = __webpack_require__(9);
 class Quad
 {
 constructor()
@@ -7232,10 +7256,10 @@ __webpack_exports__["a"] = Quad;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_2__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_3__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_3__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_4__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_5__system_device__ = __webpack_require__(5);
 var __WEBPACK_IMPORTED_MODULE_6__common_defs__ = __webpack_require__(0);
@@ -7453,24 +7477,24 @@ __webpack_exports__["a"] = ValueTable;
 __webpack_exports__["d"] = isAssetsLoaded;
 __webpack_exports__["c"] = SetAssetsLoaded;
 __webpack_exports__["e"] = load;
-var __WEBPACK_IMPORTED_MODULE_0__library_managers_eventmanager__ = __webpack_require__(8);
-var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(18);
 var __WEBPACK_IMPORTED_MODULE_2__library_utilities_highresolutiontimer__ = __webpack_require__(2);
-var __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_4__library_script_scriptmanager__ = __webpack_require__(13);
 var __WEBPACK_IMPORTED_MODULE_5__library_physics_physicsworldmanager__ = __webpack_require__(56);
 var __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__ = __webpack_require__(30);
-var __WEBPACK_IMPORTED_MODULE_8__library_managers_soundmanager__ = __webpack_require__(22);
-var __WEBPACK_IMPORTED_MODULE_9__library_managers_spritestrategymanager__ = __webpack_require__(34);
-var __WEBPACK_IMPORTED_MODULE_10__library_2d_basicstagestrategy2d__ = __webpack_require__(115);
-var __WEBPACK_IMPORTED_MODULE_11__library_2d_basicspritestrategy2d__ = __webpack_require__(117);
+var __WEBPACK_IMPORTED_MODULE_8__library_managers_soundmanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_9__library_managers_spritestrategymanager__ = __webpack_require__(32);
+var __WEBPACK_IMPORTED_MODULE_10__library_2d_basicstagestrategy2d__ = __webpack_require__(122);
+var __WEBPACK_IMPORTED_MODULE_11__library_2d_basicspritestrategy2d__ = __webpack_require__(124);
 var __WEBPACK_IMPORTED_MODULE_12__library_2d_sprite2d__ = __webpack_require__(4);
-var __WEBPACK_IMPORTED_MODULE_13__library_common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_13__library_common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_14__library_utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_15__library_system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_16__commonstate__ = __webpack_require__(43);
-var __WEBPACK_IMPORTED_MODULE_17__gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_16__commonstate__ = __webpack_require__(37);
+var __WEBPACK_IMPORTED_MODULE_17__gamestate__ = __webpack_require__(21);
 var __WEBPACK_IMPORTED_MODULE_18__library_common_defs__ = __webpack_require__(0);
 var __WEBPACK_IMPORTED_MODULE_19__library_utilities_genfunc__ = __webpack_require__(7);
 var assetsLoaded  = false;
@@ -7684,7 +7708,7 @@ __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__object2d__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_0__object2d__ = __webpack_require__(19);
 var __WEBPACK_IMPORTED_MODULE_1__sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_2__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_3__physics_physicscomponent2d__ = __webpack_require__(55);
@@ -7716,6 +7740,16 @@ this.spriteMap.set( dataAry[i].name, sprite );
 sprite.copyTransform( dataAry[i] );
 }
 this.copyTransform( actorData );
+}
+load( data )
+{
+if( data instanceof SpriteData )
+{
+copyTransform( data );
+}
+else if( data instanceof Element )
+{
+}
 }
 init()
 {
@@ -7798,8 +7832,8 @@ __webpack_exports__["a"] = ActorSprite2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(32);
-var __WEBPACK_IMPORTED_MODULE_1__common_spritedata__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_0__common_object__ = __webpack_require__(34);
+var __WEBPACK_IMPORTED_MODULE_1__common_spritedata__ = __webpack_require__(31);
 var __WEBPACK_IMPORTED_MODULE_2__common_defs__ = __webpack_require__(0);
 class ActorData extends __WEBPACK_IMPORTED_MODULE_0__common_object__["a" ]
 {
@@ -7835,33 +7869,33 @@ __webpack_exports__["a"] = ActorData;
 __webpack_exports__["d"] = isAssetsLoaded;
 __webpack_exports__["c"] = SetAssetsLoaded;
 __webpack_exports__["e"] = load;
-var __WEBPACK_IMPORTED_MODULE_0__library_managers_eventmanager__ = __webpack_require__(8);
-var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(18);
 var __WEBPACK_IMPORTED_MODULE_2__library_utilities_highresolutiontimer__ = __webpack_require__(2);
-var __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__ = __webpack_require__(10);
 var __WEBPACK_IMPORTED_MODULE_5__library_script_scriptmanager__ = __webpack_require__(13);
 var __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__ = __webpack_require__(41);
-var __WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__ = __webpack_require__(34);
-var __WEBPACK_IMPORTED_MODULE_9__library_slot_symbolsetviewstrategy2d__ = __webpack_require__(119);
-var __WEBPACK_IMPORTED_MODULE_10__library_2d_spritesetstrategy2d__ = __webpack_require__(123);
-var __WEBPACK_IMPORTED_MODULE_11__library_slot_animatedcycleresults__ = __webpack_require__(126);
+var __WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__ = __webpack_require__(32);
+var __WEBPACK_IMPORTED_MODULE_9__library_slot_symbolsetviewstrategy2d__ = __webpack_require__(65);
+var __WEBPACK_IMPORTED_MODULE_10__library_2d_spritesetstrategy2d__ = __webpack_require__(67);
+var __WEBPACK_IMPORTED_MODULE_11__library_slot_animatedcycleresults__ = __webpack_require__(131);
 var __WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__ = __webpack_require__(30);
-var __WEBPACK_IMPORTED_MODULE_13__library_managers_soundmanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_13__library_managers_soundmanager__ = __webpack_require__(20);
 var __WEBPACK_IMPORTED_MODULE_14__library_2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_15__library_utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_16__library_system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_17__library_slot_betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_18__library_slot_slotgame__ = __webpack_require__(128);
-var __WEBPACK_IMPORTED_MODULE_19__library_slot_basegamemusic__ = __webpack_require__(133);
-var __WEBPACK_IMPORTED_MODULE_20__game_frontpanel__ = __webpack_require__(135);
-var __WEBPACK_IMPORTED_MODULE_21__commonstate__ = __webpack_require__(43);
-var __WEBPACK_IMPORTED_MODULE_22__gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_17__library_slot_betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_18__library_slot_slotgame__ = __webpack_require__(69);
+var __WEBPACK_IMPORTED_MODULE_19__library_slot_basegamemusic__ = __webpack_require__(136);
+var __WEBPACK_IMPORTED_MODULE_20__game_frontpanel__ = __webpack_require__(70);
+var __WEBPACK_IMPORTED_MODULE_21__commonstate__ = __webpack_require__(37);
+var __WEBPACK_IMPORTED_MODULE_22__gamestate__ = __webpack_require__(21);
 var __WEBPACK_IMPORTED_MODULE_23__library_common_defs__ = __webpack_require__(0);
 var __WEBPACK_IMPORTED_MODULE_24__library_utilities_genfunc__ = __webpack_require__(7);
-var __WEBPACK_IMPORTED_MODULE_25__library_slot_slotdefs__ = __webpack_require__(9);
-var __WEBPACK_IMPORTED_MODULE_26__library_slot_slotgroupfactory__ = __webpack_require__(137);
+var __WEBPACK_IMPORTED_MODULE_25__library_slot_slotdefs__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_26__library_slot_slotgroupfactory__ = __webpack_require__(71);
 var assetsLoaded  = false;
 const ASSET_COUNT = 31;
 __webpack_exports__["a"] = ASSET_COUNT;
@@ -8050,7 +8084,24 @@ callback();
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(45);
+var __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__ = __webpack_require__(66);
+var __WEBPACK_IMPORTED_MODULE_1__symbolsetview__ = __webpack_require__(126);
+class SymbolSetViewStrategy2D extends __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__["a" ]
+{
+constructor()
+{
+super();
+}
+allocateSet()
+{
+return new __WEBPACK_IMPORTED_MODULE_1__symbolsetview__["a" ];
+}
+}
+__webpack_exports__["a"] = SymbolSetViewStrategy2D;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(46);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_assetholder__ = __webpack_require__(10);
 class SetStrategy extends __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__["a" ]
 {
@@ -8101,11 +8152,449 @@ __webpack_exports__["a"] = SetStrategy;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(18);
-var __WEBPACK_IMPORTED_MODULE_1__spinprofile__ = __webpack_require__(47);
+var __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__ = __webpack_require__(66);
+var __WEBPACK_IMPORTED_MODULE_1__2d_spriteset2d__ = __webpack_require__(129);
+class SpriteSetStrategy2D extends __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__["a" ]
+{
+constructor()
+{
+super();
+}
+allocateSet()
+{
+return new __WEBPACK_IMPORTED_MODULE_1__2d_spriteset2d__["a" ];
+}
+}
+__webpack_exports__["a"] = SpriteSetStrategy2D;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+class iCycleResults
+{
+constructor()
+{
+this.playResult = null;
+this.slotGroupView = null;
+this.payCounter = 0;
+this.cycleCounter = 0;
+this.curPayIndex = 0;
+this.firstCycleComplete = false;
+this.cycleResultsActive = false;
+}
+activate()
+{
+this.cycleResultsActive = true;
+this.firstCycleComplete = false;
+this.payCounter = 0;
+this.cycleCounter = 0;
+this.curPayIndex = 0;
+}
+deactivate()
+{
+this.cycleResultsActive = false;
+}
+isActive()
+{
+return this.cycleResultsActive;
+}
+isAnimating()
+{
+return false;
+}
+update()
+{
+}
+transform( matrix, tranformWorldPos )
+{
+}
+render( matrix )
+{
+}
+}
+__webpack_exports__["a"] = iCycleResults;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_1__slotresults__ = __webpack_require__(132);
+var __WEBPACK_IMPORTED_MODULE_2__common_build_defs__ = __webpack_require__(135);
+var __WEBPACK_IMPORTED_MODULE_3__slotdefs__ = __webpack_require__(8);
+class SlotGame
+{
+constructor()
+{
+this.slotResults = new __WEBPACK_IMPORTED_MODULE_1__slotresults__["a" ];
+this.slotGroupAry = [];
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ];
+this.frontPanel = null;
+this.gameMusic = null;
+}
+addSlotGroup( slotGroup )
+{
+this.slotGroupAry.push( slotGroup );
+}
+init()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.init();
+}
+cleanUp()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.cleanUp();
+}
+allowSpinMusic( allow )
+{
+this.allowSpinMusic = allow;
+}
+allowStopSounds( allow )
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.allowStopSounds( allow );
+}
+processGameState()
+{
+switch( this.slotState )
+{
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ]:                this.stateIdle();             break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["q" ]:  this.stateKillCycleResults(); break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ]:         this.statePlaceWager();       break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["o" ]:      this.stateGenerateStops();    break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["n" ]:            this.stateEvaluate();         break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["x" ]:            this.statePreSpin();          break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ]:                this.stateSpin();             break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["u" ]:           this.statePostSpin();         break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["v" ]:       this.statePreAwardWin();      break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["l" ]:      this.stateBonusDecision();    break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["w" ]:           this.statePreBonus();         break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["k" ]:               this.stateBonus();            break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["t" ]:          this.statePostBonus();        break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["s" ]:      this.statePostAwardWin();     break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["z" ]:      this.stateWaitForAward();     break;
+case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ]:                 this.stateEnd();              break;
+};
+}
+stateIdle()
+{
+}
+stateKillCycleResults()
+{
+this.killCycleResults();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ];
+}
+statePlaceWager()
+{
+__WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].deductBet();
+if( this.frontPanel )
+this.frontPanel.statePlaceWager( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].getCredits() );
+if( this.gameMusic )
+this.gameMusic.startMusic();
+this.slotResults.clear();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["o" ];
+}
+stateGenerateStops()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupModel.generateStops();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["n" ];
+}
+stateEvaluate()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupModel.evaluate();
+this.slotResults.sortPays();
+this.slotResults.addUpWin();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["x" ];
+}
+statePreSpin()
+{
+if( this.frontPanel )
+this.frontPanel.statePreSpin();
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.startSpin();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ];
+}
+stateSpin()
+{
+let stopped = true;
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+{
+if( !this.slotGroupAry[i].slotGroupView.isSpinState( __WEBPACK_IMPORTED_MODULE_3__slotdefs__["E" ] ) )
+{
+stopped = false;
+break;
+}
+}
+if( stopped )
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["u" ];
+}
+statePostSpin()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["v" ];
+}
+statePreAwardWin()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["l" ];
+}
+stateBonusDecision()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["w" ];
+}
+statePreBonus()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["k" ];
+}
+stateBonus()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["t" ];
+}
+statePostBonus()
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["s" ];
+}
+statePostAwardWin()
+{
+if( this.slotResults.isWin() )
+{
+__WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].addAward( this.slotResults.getTotalWin() );
+if( this.frontPanel )
+this.frontPanel.startBangUp( 
+this.slotResults.getTotalWin(), __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].getCredits() );
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.activateCycleResults();
+}
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["z" ];
+}
+stateWaitForAward()
+{
+if( this.frontPanel )
+{
+if( !this.frontPanel.isBanging() )
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ];
+}
+else
+{
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ];
+}
+}
+stateEnd()
+{
+if( this.frontPanel )
+this.frontPanel.stateEnd( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].allowPlay() );
+if( this.gameMusic )
+this.gameMusic.setTimeOut();
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ];
+}
+handleEvent( event )
+{
+if( __WEBPACK_IMPORTED_MODULE_2__common_build_defs__["a" ] )
+{
+if( (this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ]) && (event.type === 'mouseup') )
+{
+if( this.isCycleResultsActive() )
+this.killCycleResults();
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].handleEvent( event );
+}
+}
+}
+update()
+{
+if( this.isCycleResultsActive() )
+{
+if( !this.isCycleResultsAnimating() )
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.startCycleResultsAnimation();
+}
+}
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.update();
+}
+transform()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.transform();
+}
+render( matrix )
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.render( matrix );
+}
+playGame( control )
+{
+if( this.frontPanel )
+this.frontPanel.playGame( control, this.slotState );
+if( this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ] )
+{
+if( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].allowPlay() )
+{
+if( this.isCycleResultsActive() )
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["q" ];
+else
+this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ];
+}
+}
+else if( this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ] )
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+this.slotGroupAry[i].slotGroupView.stopSpin();
+}
+}
+setFrontPanel( frontPanel )
+{
+this.frontPanel = frontPanel;
+}
+setGameMusic( gameMusic )
+{
+this.gameMusic = gameMusic;
+}
+isCycleResultsActive()
+{
+let active = false;
+for( let i = 0; i < this.slotGroupAry.length && !active; ++i )
+active = this.slotGroupAry[i].slotGroupView.isCycleResultsActive();
+return active;
+}
+isCycleResultsAnimating()
+{
+let animating = false;
+for( let i = 0; i < this.slotGroupAry.length && !animating; ++i )
+animating = this.slotGroupAry[i].slotGroupView.isCycleResultsAnimating();
+return animating;
+}
+killCycleResults()
+{
+for( let i = 0; i < this.slotGroupAry.length; ++i )
+{
+this.slotGroupAry[i].slotGroupView.stopCycleResultsAnimation();
+this.slotGroupAry[i].slotGroupView.deactivateCycleResults();
+}
+}
+}
+__webpack_exports__["a"] = SlotGame;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__library_slot_ifrontpanel__ = __webpack_require__(138);
+var __WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_2__library_gui_menumanager__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_3__library_slot_slotdefs__ = __webpack_require__(8);
+class FrontPanel extends __WEBPACK_IMPORTED_MODULE_0__library_slot_ifrontpanel__["a" ]
+{
+constructor()
+{
+super();
+this.winMeter = null;
+this.creditMeter = null;
+this.playBtn = null;
+this.totalBetCtrl = null;
+}
+setButtons( playBtn, totalBetCtrl )
+{
+this.playBtn = playBtn;
+this.totalBetCtrl = totalBetCtrl;
+let incBtn = this.totalBetCtrl.findControlByName( 'total_bet_inc_btn' );
+let decBtn = this.totalBetCtrl.findControlByName( 'total_bet_dec_btn' );
+incBtn.connect_ExecutionAction( this.totalBetCallBack.bind(this) );
+decBtn.connect_ExecutionAction( this.totalBetCallBack.bind(this) );
+}
+setMeters( winMeter, creditMeter )
+{
+this.winMeter = winMeter;
+this.creditMeter = creditMeter;
+if( this.creditMeter )
+this.creditMeter.set( __WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__["a" ].getCredits() );
+}
+statePlaceWager( credits )
+{
+if( this.winMeter )
+this.winMeter.clear();
+if( this.creditMeter )
+this.creditMeter.set( credits );
+if( this.totalBetCtrl )
+this.totalBetCtrl.disableControl();
+}
+stateEnd( allowPlay )
+{
+if( allowPlay )
+{
+if( this.totalBetCtrl )
+this.totalBetCtrl.enableControl();
+}
+}
+startBangUp( win, credits )
+{
+if( this.winMeter )
+this.winMeter.startBangUp( win );
+if( this.creditMeter )
+this.creditMeter.startBangUp( credits );
+}
+isBanging()
+{
+let result = false;
+if( this.winMeter )
+result |= this.winMeter.isBanging();
+if( this.creditMeter )
+result |= this.creditMeter.isBanging();
+return result;
+}
+fastBang()
+{
+if( this.winMeter )
+this.winMeter.fastBang();
+if( this.creditMeter )
+this.creditMeter.fastBang();
+}
+totalBetCallBack( control )
+{
+let totalBetMeter = __WEBPACK_IMPORTED_MODULE_2__library_gui_menumanager__["a" ].getMenuControl( 'base_game_ui', 'total_bet_meter' );
+__WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__["a" ].setLineBet( totalBetMeter.activeIndex + 1 );
+}
+}
+__webpack_exports__["a"] = FrontPanel;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_exports__["a"] = create;
+var __WEBPACK_IMPORTED_MODULE_0__slotgroupmodel__ = __webpack_require__(139);
+var __WEBPACK_IMPORTED_MODULE_1__reelgroupview__ = __webpack_require__(143);
+var __WEBPACK_IMPORTED_MODULE_2__wheelgroupview__ = __webpack_require__(145);
+var __WEBPACK_IMPORTED_MODULE_3__slotgroup__ = __webpack_require__(147);
+var __WEBPACK_IMPORTED_MODULE_4__slotdefs__ = __webpack_require__(8);
+function create(
+slotDevice,
+slotStripSetId,
+paytableSetId,
+slotMath,
+viewCfgNode,
+viewSpinProfileCfgNode,
+symbolSetView,
+playResult,
+cycleResults = null )
+{
+var slotGroupModel = new __WEBPACK_IMPORTED_MODULE_0__slotgroupmodel__["a" ]( slotMath, playResult );
+slotGroupModel.create( slotStripSetId, paytableSetId );
+if( slotDevice === __WEBPACK_IMPORTED_MODULE_4__slotdefs__["c" ] )
+var slotGroupView = new __WEBPACK_IMPORTED_MODULE_1__reelgroupview__["a" ]( slotGroupModel );
+else if( slotDevice === __WEBPACK_IMPORTED_MODULE_4__slotdefs__["d" ] )
+var slotGroupView = new __WEBPACK_IMPORTED_MODULE_2__wheelgroupview__["a" ]( slotGroupModel );
+else
+throw new Error( `Undefined slot device!` );
+slotGroupView.create( viewCfgNode, symbolSetView, cycleResults );
+slotGroupView.loadSpinProfileFromNode( viewSpinProfileCfgNode );
+if( cycleResults )
+cycleResults.init( slotGroupView );
+return new __WEBPACK_IMPORTED_MODULE_3__slotgroup__["a" ]( slotGroupModel, slotGroupView );
+}
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_1__spinprofile__ = __webpack_require__(48);
 var __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_3__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_4__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_4__slotdefs__ = __webpack_require__(8);
 class SlotGroupView extends __WEBPACK_IMPORTED_MODULE_0__2d_object2d__["a" ]
 {
 constructor( slotGroupModel )
@@ -8305,9 +8794,9 @@ __webpack_exports__["a"] = SlotGroupView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(19);
 var __WEBPACK_IMPORTED_MODULE_1__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_2__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_2__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_3__common_quad__ = __webpack_require__(58);
 var __WEBPACK_IMPORTED_MODULE_4__utilities_matrix__ = __webpack_require__(16);
 var __WEBPACK_IMPORTED_MODULE_5__utilities_settings__ = __webpack_require__(11);
@@ -8363,26 +8852,224 @@ __webpack_exports__["a"] = SlotStripView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
+__webpack_exports__["d"] = isAssetsLoaded;
+__webpack_exports__["b"] = SetAssetsLoaded;
+__webpack_exports__["e"] = load;
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_2__library_utilities_highresolutiontimer__ = __webpack_require__(2);
+var __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__ = __webpack_require__(10);
+var __WEBPACK_IMPORTED_MODULE_5__library_script_scriptmanager__ = __webpack_require__(13);
+var __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
+var __WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__ = __webpack_require__(32);
+var __WEBPACK_IMPORTED_MODULE_9__library_slot_symbolsetviewstrategy2d__ = __webpack_require__(65);
+var __WEBPACK_IMPORTED_MODULE_10__library_2d_spritesetstrategy2d__ = __webpack_require__(67);
+var __WEBPACK_IMPORTED_MODULE_11__library_slot_simplecycleresults__ = __webpack_require__(148);
+var __WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__ = __webpack_require__(30);
+var __WEBPACK_IMPORTED_MODULE_13__library_managers_soundmanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_14__library_2d_sprite2d__ = __webpack_require__(4);
+var __WEBPACK_IMPORTED_MODULE_15__library_utilities_settings__ = __webpack_require__(11);
+var __WEBPACK_IMPORTED_MODULE_16__library_system_device__ = __webpack_require__(5);
+var __WEBPACK_IMPORTED_MODULE_17__library_slot_betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_18__library_slot_slotgame__ = __webpack_require__(69);
+var __WEBPACK_IMPORTED_MODULE_19__game_frontpanel__ = __webpack_require__(70);
+var __WEBPACK_IMPORTED_MODULE_20__commonstate__ = __webpack_require__(37);
+var __WEBPACK_IMPORTED_MODULE_21__gamestate__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_22__library_common_defs__ = __webpack_require__(0);
+var __WEBPACK_IMPORTED_MODULE_23__library_utilities_genfunc__ = __webpack_require__(7);
+var __WEBPACK_IMPORTED_MODULE_24__library_slot_slotdefs__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_25__library_slot_slotgroupfactory__ = __webpack_require__(71);
+var assetsLoaded  = false;
+const ASSET_COUNT = 13;
+__webpack_exports__["a"] = ASSET_COUNT;
+const stateGroup = '(wheel)';
+class WheelDemoState extends __WEBPACK_IMPORTED_MODULE_20__commonstate__["a" ]
+{
+constructor( gameLoopCallback = null )
+{
+super( __WEBPACK_IMPORTED_MODULE_21__gamestate__["f" ], __WEBPACK_IMPORTED_MODULE_21__gamestate__["b" ], gameLoopCallback );
+this.background = new __WEBPACK_IMPORTED_MODULE_14__library_2d_sprite2d__["a" ]( __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].getData( stateGroup, 'background' ) );
+this.background.transform();
+this.scriptComponent = new __WEBPACK_IMPORTED_MODULE_3__library_script_scriptcomponent__["a" ];
+this.scriptComponent.set( __WEBPACK_IMPORTED_MODULE_5__library_script_scriptmanager__["a" ].get('ScreenFade')( 0, 1, 500 ) );
+this.slotGame = new __WEBPACK_IMPORTED_MODULE_18__library_slot_slotgame__["a" ]();
+let playResult = this.slotGame.slotResults.create();
+let slotGroup = __WEBPACK_IMPORTED_MODULE_25__library_slot_slotgroupfactory__["a" ](
+__WEBPACK_IMPORTED_MODULE_24__library_slot_slotdefs__["d" ],
+'wheel_strip',
+'wheel_paytable',
+__WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__["a" ].getSlotMath( stateGroup, "slot_wheel" ),
+__WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__["a" ].get( stateGroup, 'wheelgroup' ),
+__WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__["a" ].get( stateGroup, 'spinProfile' ),
+__WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__["a" ].get( '(wheel_symbol_set_view)' ).get( "wheel_wedges" ),
+playResult,
+new __WEBPACK_IMPORTED_MODULE_11__library_slot_simplecycleresults__["a" ]( playResult ) );
+this.slotGame.addSlotGroup( slotGroup );
+}
+init()
+{
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].allowEventHandling = true;
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].activateTree( ['pause_tree', 'base_game_tree'] );
+this.slotGame.init();
+let playBtn = __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].getMenuControl( 'base_game_ui', 'play_btn' );
+playBtn.connect_ExecutionAction( this.slotGame.playGame.bind(this.slotGame) );
+__WEBPACK_IMPORTED_MODULE_17__library_slot_betmanager__["a" ].setLineBet(1);
+__WEBPACK_IMPORTED_MODULE_17__library_slot_betmanager__["a" ].setTotalLines(1);
+__WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__["a" ].deleteGroup( [stateGroup] );
+__WEBPACK_IMPORTED_MODULE_2__library_utilities_highresolutiontimer__["a" ].calcElapsedTime();
+requestAnimationFrame( this.callback );
+}
+cleanUp()
+{
+this.slotGame.cleanUp();
+unload();
+}
+handleEvent( event )
+{
+super.handleEvent( event );
+if( event instanceof CustomEvent )
+{
+if( event.detail.type === __WEBPACK_IMPORTED_MODULE_22__library_common_defs__["_0" ] )
+{
+if( event.detail.arg[0] === __WEBPACK_IMPORTED_MODULE_22__library_common_defs__["_54" ] )
+{
+this.scriptComponent.set( __WEBPACK_IMPORTED_MODULE_5__library_script_scriptmanager__["a" ].get('ScreenFade')( 1, 0, 500, true ) );
+}
+}
+}
+else if( event instanceof MouseEvent )
+{
+if( !__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].isMenuActive() )
+this.slotGame.handleEvent( event );
+}
+}
+miscProcess()
+{
+this.slotGame.processGameState();
+}
+update()
+{
+super.update();
+this.scriptComponent.update();
+if( !__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].isMenuActive() )
+{
+this.slotGame.update();
+}
+}
+transform()
+{
+super.transform();
+this.slotGame.transform();
+}
+preRender()
+{
+let matrix = __WEBPACK_IMPORTED_MODULE_16__library_system_device__["a" ].orthographicMatrix;
+this.background.render( matrix );
+this.slotGame.render( matrix );
+super.preRender();
+}
+postRender()
+{
+super.postRender();
+}
+}
+__webpack_exports__["c"] = WheelDemoState;
+function isAssetsLoaded()
+{
+return assetsLoaded;
+}
+function SetAssetsLoaded()
+{
+assetsLoaded = true;
+}
+function unload()
+{
+__WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].freeGroup( [stateGroup] );
+__WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].freeGroup( [stateGroup] );
+__WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__["a" ].clear();
+__WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__["a" ].clear();
+}
+function load()
+{
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].loadXMLGroup2D( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].loadTextureGroup2D( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].loadMeshGroup2D( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_6__library_objectdatamanager_objectdatamanager__["a" ].createFromData( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].preloadGroup( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => { __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__["a" ].createGroup( [stateGroup] ); callback(); });
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__["a" ].loadGroup( [stateGroup], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) => __WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__["a" ].load( '(wheel_symbol_set_view)', new __WEBPACK_IMPORTED_MODULE_9__library_slot_symbolsetviewstrategy2d__["a" ], callback ) );
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) =>
+{
+__WEBPACK_IMPORTED_MODULE_8__library_managers_spritestrategymanager__["a" ].get( '(wheel_symbol_set_view)' ).get( 'wheel_wedges' ).build();
+callback();
+});
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) =>
+{
+__WEBPACK_IMPORTED_MODULE_23__library_utilities_genfunc__["b" ]( 'xml', 'data/objects/2d/slot/wheel/wheelgroup.cfg',
+( xmlData ) =>
+{
+__WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__["a" ].set( stateGroup, 'wheelgroup', xmlData );
+callback();
+});
+});
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) =>
+{
+__WEBPACK_IMPORTED_MODULE_23__library_utilities_genfunc__["b" ]( 'xml', 'data/objects/2d/slot/wheel/spinProfile.cfg',
+( xmlData ) =>
+{
+__WEBPACK_IMPORTED_MODULE_4__library_utilities_assetholder__["a" ].set( stateGroup, 'spinProfile', xmlData );
+callback();
+});
+});
+__WEBPACK_IMPORTED_MODULE_12__library_managers_loadmanager__["a" ].add(
+( callback ) =>
+{
+__WEBPACK_IMPORTED_MODULE_23__library_utilities_genfunc__["b" ]( 'xml', 'data/objects/2d/slot/wheel/payline_wheel.cfg',
+( xmlNode ) =>
+{
+__WEBPACK_IMPORTED_MODULE_7__library_slot_slotmathmanager__["a" ].loadPaylineSetFromNode( xmlNode );
+callback();
+});
+});
+}
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-var __WEBPACK_IMPORTED_MODULE_0__game__ = __webpack_require__(69);
+var __WEBPACK_IMPORTED_MODULE_0__game__ = __webpack_require__(76);
 var game = new __WEBPACK_IMPORTED_MODULE_0__game__["a" ];
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__library_managers_signalmanager__ = __webpack_require__(15);
-var __WEBPACK_IMPORTED_MODULE_1__library_system_basegame__ = __webpack_require__(70);
+var __WEBPACK_IMPORTED_MODULE_1__library_system_basegame__ = __webpack_require__(77);
 var __WEBPACK_IMPORTED_MODULE_2__library_utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_3__library_utilities_genfunc__ = __webpack_require__(7);
-var __WEBPACK_IMPORTED_MODULE_4__library_managers_shadermanager__ = __webpack_require__(19);
-var __WEBPACK_IMPORTED_MODULE_5__state_startupstate__ = __webpack_require__(76);
-var __WEBPACK_IMPORTED_MODULE_6__state_titlescreenstate__ = __webpack_require__(42);
-var __WEBPACK_IMPORTED_MODULE_7__state_loadstate__ = __webpack_require__(114);
+var __WEBPACK_IMPORTED_MODULE_4__library_managers_shadermanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_5__state_startupstate__ = __webpack_require__(83);
+var __WEBPACK_IMPORTED_MODULE_6__state_titlescreenstate__ = __webpack_require__(44);
+var __WEBPACK_IMPORTED_MODULE_7__state_loadstate__ = __webpack_require__(121);
 var __WEBPACK_IMPORTED_MODULE_8__state_pachinkostate__ = __webpack_require__(61);
 var __WEBPACK_IMPORTED_MODULE_9__state_bigpaybackstate__ = __webpack_require__(64);
-var __WEBPACK_IMPORTED_MODULE_10__smartGUI_smartconfirmbtn__ = __webpack_require__(147);
-var __WEBPACK_IMPORTED_MODULE_11__library_slot_betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_12__ai_aiball__ = __webpack_require__(149);
-var __WEBPACK_IMPORTED_MODULE_13__state_gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_10__state_wheeldemostate__ = __webpack_require__(74);
+var __WEBPACK_IMPORTED_MODULE_11__smartGUI_smartconfirmbtn__ = __webpack_require__(149);
+var __WEBPACK_IMPORTED_MODULE_12__library_slot_betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_13__ai_aiball__ = __webpack_require__(151);
+var __WEBPACK_IMPORTED_MODULE_14__state_gamestate__ = __webpack_require__(21);
 class Game extends __WEBPACK_IMPORTED_MODULE_1__library_system_basegame__["a" ]
 {
 constructor()
@@ -8401,19 +9088,19 @@ this.init();
 init()
 {
 super.init();
-__WEBPACK_IMPORTED_MODULE_11__library_slot_betmanager__["a" ].setCredits(50000);
+__WEBPACK_IMPORTED_MODULE_12__library_slot_betmanager__["a" ].setCredits(50000);
 this.gameState = new __WEBPACK_IMPORTED_MODULE_5__state_startupstate__["a" ]( this.gameLoop.bind(this) );
 this.gameState.init();
 }
 smartGuiControlCreateCallBack( control )
 {
 if( control.faction === 'decision_btn' )
-control.smartGui = new __WEBPACK_IMPORTED_MODULE_10__smartGUI_smartconfirmbtn__["a" ]( control );
+control.smartGui = new __WEBPACK_IMPORTED_MODULE_11__smartGUI_smartconfirmbtn__["a" ]( control );
 }
 aiCreateCallBack( aiName, sprite )
 {
 if( aiName === 'aiBall' )
-sprite.setAI( new __WEBPACK_IMPORTED_MODULE_12__ai_aiball__["a" ](sprite) );
+sprite.setAI( new __WEBPACK_IMPORTED_MODULE_13__ai_aiball__["a" ](sprite) );
 }
 shaderInitCallBack( shaderId )
 {
@@ -8424,14 +9111,16 @@ doStateChange()
 if( this.gameState.doStateChange() )
 {
 this.gameState.cleanUp();
-if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_13__state_gamestate__["e" ] )
+if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_14__state_gamestate__["e" ] )
 this.gameState = new __WEBPACK_IMPORTED_MODULE_6__state_titlescreenstate__["a" ]( this.gameLoop.bind(this) );
-else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_13__state_gamestate__["b" ] )
+else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_14__state_gamestate__["b" ] )
 this.gameState = new __WEBPACK_IMPORTED_MODULE_7__state_loadstate__["a" ]( this.gameState.stateMessage, this.doStateChange.bind(this) );
-else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_13__state_gamestate__["c" ] )
+else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_14__state_gamestate__["c" ] )
 this.gameState = new __WEBPACK_IMPORTED_MODULE_8__state_pachinkostate__["b" ]( this.gameLoop.bind(this) );
-else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_13__state_gamestate__["a" ] )
+else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_14__state_gamestate__["a" ] )
 this.gameState = new __WEBPACK_IMPORTED_MODULE_9__state_bigpaybackstate__["b" ]( this.gameLoop.bind(this) );
+else if( this.gameState.nextState === __WEBPACK_IMPORTED_MODULE_14__state_gamestate__["f" ] )
+this.gameState = new __WEBPACK_IMPORTED_MODULE_10__state_wheeldemostate__["c" ]( this.gameLoop.bind(this) );
 this.gameState.init();
 return true;
 }
@@ -8472,10 +9161,10 @@ __webpack_exports__["a"] = Game;
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__device__ = __webpack_require__(5);
 var __WEBPACK_IMPORTED_MODULE_1__managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_2__managers_meshmanager__ = __webpack_require__(49);
-var __WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__ = __webpack_require__(24);
-var __WEBPACK_IMPORTED_MODULE_4__managers_shadermanager__ = __webpack_require__(19);
-var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_2__managers_meshmanager__ = __webpack_require__(50);
+var __WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__ = __webpack_require__(26);
+var __WEBPACK_IMPORTED_MODULE_4__managers_shadermanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_6__utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_7__utilities_highresolutiontimer__ = __webpack_require__(2);
 class Basegame
@@ -8545,6 +9234,9 @@ render()
 __WEBPACK_IMPORTED_MODULE_0__device__["b" ].clear( this.clearBufferMask );
 this.preRender();
 this.postRender();
+__WEBPACK_IMPORTED_MODULE_4__managers_shadermanager__["a" ].unbind();
+__WEBPACK_IMPORTED_MODULE_1__managers_texturemanager__["a" ].unbind();
+__WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__["a" ].unbind();
 }
 preRender()
 {
@@ -8564,9 +9256,6 @@ this.update();
 this.transform();
 this.render();
 requestAnimationFrame( this.gameLoop.bind(this) );
-__WEBPACK_IMPORTED_MODULE_4__managers_shadermanager__["a" ].unbind();
-__WEBPACK_IMPORTED_MODULE_1__managers_texturemanager__["a" ].unbind();
-__WEBPACK_IMPORTED_MODULE_3__managers_vertexbuffermanager__["a" ].unbind();
 }
 }
 __webpack_exports__["a"] = Basegame;
@@ -8678,7 +9367,7 @@ __webpack_exports__["a"] = Mesh;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_vertex2d__ = __webpack_require__(31);
+var __WEBPACK_IMPORTED_MODULE_0__common_vertex2d__ = __webpack_require__(33);
 class Quad2d
 {
 constructor()
@@ -8718,32 +9407,32 @@ __webpack_exports__["a"] = ShaderData;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__library_managers_shadermanager__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_shadermanager__ = __webpack_require__(22);
 var __WEBPACK_IMPORTED_MODULE_1__library_managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_2__library_managers_vertexbuffermanager__ = __webpack_require__(24);
-var __WEBPACK_IMPORTED_MODULE_3__library_managers_fontmanager__ = __webpack_require__(50);
+var __WEBPACK_IMPORTED_MODULE_2__library_managers_vertexbuffermanager__ = __webpack_require__(26);
+var __WEBPACK_IMPORTED_MODULE_3__library_managers_fontmanager__ = __webpack_require__(38);
 var __WEBPACK_IMPORTED_MODULE_4__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_5__library_managers_actionmanager__ = __webpack_require__(39);
-var __WEBPACK_IMPORTED_MODULE_6__library_gui_menumanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_5__library_managers_actionmanager__ = __webpack_require__(42);
+var __WEBPACK_IMPORTED_MODULE_6__library_gui_menumanager__ = __webpack_require__(18);
 var __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__ = __webpack_require__(30);
 var __WEBPACK_IMPORTED_MODULE_8__library_managers_signalmanager__ = __webpack_require__(15);
-var __WEBPACK_IMPORTED_MODULE_9__library_managers_soundmanager__ = __webpack_require__(22);
-var __WEBPACK_IMPORTED_MODULE_10__library_managers_spritestrategymanager__ = __webpack_require__(34);
+var __WEBPACK_IMPORTED_MODULE_9__library_managers_soundmanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_10__library_managers_spritestrategymanager__ = __webpack_require__(32);
 var __WEBPACK_IMPORTED_MODULE_11__library_2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_12__library_system_device__ = __webpack_require__(5);
 var __WEBPACK_IMPORTED_MODULE_13__library_utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_14__library_utilities_assetholder__ = __webpack_require__(10);
 var __WEBPACK_IMPORTED_MODULE_15__library_gui_uiprogressbar__ = __webpack_require__(59);
-var __WEBPACK_IMPORTED_MODULE_16__library_slot_slotmathmanager__ = __webpack_require__(41);
-var __WEBPACK_IMPORTED_MODULE_17__state_titlescreenstate__ = __webpack_require__(42);
-var __WEBPACK_IMPORTED_MODULE_18__scripts_utilityscripts__ = __webpack_require__(44);
-var __WEBPACK_IMPORTED_MODULE_19__scripts_menuscripts__ = __webpack_require__(111);
-var __WEBPACK_IMPORTED_MODULE_20__scripts_slotscripts__ = __webpack_require__(112);
-var __WEBPACK_IMPORTED_MODULE_21__gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_16__library_slot_slotmathmanager__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_17__state_titlescreenstate__ = __webpack_require__(44);
+var __WEBPACK_IMPORTED_MODULE_18__scripts_utilityscripts__ = __webpack_require__(45);
+var __WEBPACK_IMPORTED_MODULE_19__scripts_menuscripts__ = __webpack_require__(118);
+var __WEBPACK_IMPORTED_MODULE_20__scripts_slotscripts__ = __webpack_require__(119);
+var __WEBPACK_IMPORTED_MODULE_21__gamestate__ = __webpack_require__(21);
 var __WEBPACK_IMPORTED_MODULE_22__library_utilities_genfunc__ = __webpack_require__(7);
-const STARTUP_ASSET_COUNT = 82,
+const STARTUP_ASSET_COUNT = 84,
 LOGO_DISPLAY_DELAY = 2000;
-class StartUpState extends __WEBPACK_IMPORTED_MODULE_21__gamestate__["f" ]
+class StartUpState extends __WEBPACK_IMPORTED_MODULE_21__gamestate__["g" ]
 {
 constructor( gameLoopCallback = null )
 {
@@ -8847,6 +9536,12 @@ __WEBPACK_IMPORTED_MODULE_20__scripts_slotscripts__["a" ]();
 let groupAry = ['(menu)','(loadingScreen)'];
 __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].loadCompleteCallback = this.loadComplete.bind(this);
 __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
+( callback ) =>
+{
+__WEBPACK_IMPORTED_MODULE_22__library_utilities_genfunc__["b" ]( 'xml', 'data/textures/fonts/font.lst',
+( xmlNode ) => __WEBPACK_IMPORTED_MODULE_3__library_managers_fontmanager__["a" ].load( xmlNode, callback ) );
+});
+__WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
 ( callback ) => __WEBPACK_IMPORTED_MODULE_4__library_objectdatamanager_objectdatamanager__["a" ].loadXMLGroup2D( groupAry, callback ) );
 __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
 ( callback ) => __WEBPACK_IMPORTED_MODULE_4__library_objectdatamanager_objectdatamanager__["a" ].loadTextureGroup2D( groupAry, callback ) );
@@ -8873,12 +9568,6 @@ __WEBPACK_IMPORTED_MODULE_22__library_utilities_genfunc__["b" ]( 'xml', 'data/so
 __WEBPACK_IMPORTED_MODULE_9__library_managers_soundmanager__["a" ].loadListTable( xmlNode );
 __WEBPACK_IMPORTED_MODULE_9__library_managers_soundmanager__["a" ].loadGroup( ['(menu)'], callback );
 });
-});
-__WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
-( callback ) =>
-{
-__WEBPACK_IMPORTED_MODULE_22__library_utilities_genfunc__["b" ]( 'xml', 'data/textures/fonts/font.lst',
-( xmlNode ) => __WEBPACK_IMPORTED_MODULE_3__library_managers_fontmanager__["a" ].load( xmlNode, callback ) );
 });
 __WEBPACK_IMPORTED_MODULE_7__library_managers_loadmanager__["a" ].add(
 ( callback ) =>
@@ -8951,8 +9640,8 @@ __webpack_exports__["a"] = StartUpState;
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_1__common_rect__ = __webpack_require__(25);
-var __WEBPACK_IMPORTED_MODULE_2__common_texture__ = __webpack_require__(48);
+var __WEBPACK_IMPORTED_MODULE_1__common_rect__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_2__common_texture__ = __webpack_require__(49);
 var __WEBPACK_IMPORTED_MODULE_3__managers_texturemanager__ = __webpack_require__(14);
 class CharData
 {
@@ -9010,7 +9699,7 @@ __webpack_exports__["a"] = Font;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_rect__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_0__common_rect__ = __webpack_require__(27);
 var __WEBPACK_IMPORTED_MODULE_1__common_size__ = __webpack_require__(1);
 class SpriteSheetGlyph
 {
@@ -9025,8 +9714,8 @@ __webpack_exports__["a"] = SpriteSheetGlyph;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__objectphysicsdata2d__ = __webpack_require__(80);
-var __WEBPACK_IMPORTED_MODULE_1__objectvisualdata2d__ = __webpack_require__(81);
+var __WEBPACK_IMPORTED_MODULE_0__objectphysicsdata2d__ = __webpack_require__(87);
+var __WEBPACK_IMPORTED_MODULE_1__objectvisualdata2d__ = __webpack_require__(88);
 var __WEBPACK_IMPORTED_MODULE_2__common_size__ = __webpack_require__(1);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_xmlparsehelper__ = __webpack_require__(12);
 class ObjectData2D
@@ -9062,7 +9751,7 @@ __webpack_exports__["a"] = ObjectData2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__Box2D_planck_min__ = __webpack_require__(38);
+var __WEBPACK_IMPORTED_MODULE_0__Box2D_planck_min__ = __webpack_require__(41);
 var __WEBPACK_IMPORTED_MODULE_0__Box2D_planck_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Box2D_planck_min__);
 class Fixture
 {
@@ -9235,14 +9924,14 @@ __webpack_exports__["a"] = ObjectPhysicsData2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_rect__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_0__common_rect__ = __webpack_require__(27);
 var __WEBPACK_IMPORTED_MODULE_1__common_color__ = __webpack_require__(17);
 var __WEBPACK_IMPORTED_MODULE_2__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_3__common_vertex2d__ = __webpack_require__(31);
-var __WEBPACK_IMPORTED_MODULE_4__common_scaledframe__ = __webpack_require__(82);
+var __WEBPACK_IMPORTED_MODULE_3__common_vertex2d__ = __webpack_require__(33);
+var __WEBPACK_IMPORTED_MODULE_4__common_scaledframe__ = __webpack_require__(89);
 var __WEBPACK_IMPORTED_MODULE_5__common_spritesheet__ = __webpack_require__(52);
 var __WEBPACK_IMPORTED_MODULE_6__managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_7__managers_vertexbuffermanager__ = __webpack_require__(24);
+var __WEBPACK_IMPORTED_MODULE_7__managers_vertexbuffermanager__ = __webpack_require__(26);
 var __WEBPACK_IMPORTED_MODULE_8__managers_spritesheetmanager__ = __webpack_require__(51);
 var __WEBPACK_IMPORTED_MODULE_9__utilities_assetholder__ = __webpack_require__(10);
 var __WEBPACK_IMPORTED_MODULE_10__common_defs__ = __webpack_require__(0);
@@ -9596,7 +10285,7 @@ __webpack_exports__["a"] = ScaledFrame;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__objectvisualdata3d__ = __webpack_require__(84);
+var __WEBPACK_IMPORTED_MODULE_0__objectvisualdata3d__ = __webpack_require__(91);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_xmlparsehelper__ = __webpack_require__(12);
 class ObjectData3D
 {
@@ -9709,17 +10398,17 @@ __webpack_exports__["a"] = KeyCodeAction;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(18);
-var __WEBPACK_IMPORTED_MODULE_1__common_dynamicoffset__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_1__common_dynamicoffset__ = __webpack_require__(39);
 var __WEBPACK_IMPORTED_MODULE_2__scrollparam__ = __webpack_require__(53);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_4__2d_sprite2d__ = __webpack_require__(4);
-var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_6__gui_uicontrolnavnode__ = __webpack_require__(57);
 var __WEBPACK_IMPORTED_MODULE_7__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
-var __WEBPACK_IMPORTED_MODULE_8__script_scriptcomponent__ = __webpack_require__(27);
+var __WEBPACK_IMPORTED_MODULE_8__script_scriptcomponent__ = __webpack_require__(23);
 var __WEBPACK_IMPORTED_MODULE_9__script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_10__uicontrolfactory__ = __webpack_require__(40);
+var __WEBPACK_IMPORTED_MODULE_10__uicontrolfactory__ = __webpack_require__(43);
 var __WEBPACK_IMPORTED_MODULE_11__utilities_xmlparsehelper__ = __webpack_require__(12);
 var __WEBPACK_IMPORTED_MODULE_12__common_defs__ = __webpack_require__(0);
 class Menu extends __WEBPACK_IMPORTED_MODULE_0__2d_object2d__["a" ]
@@ -10255,15 +10944,15 @@ __webpack_exports__["a"] = Menu;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__managers_shadermanager__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_0__managers_shadermanager__ = __webpack_require__(22);
 var __WEBPACK_IMPORTED_MODULE_1__managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_2__managers_vertexbuffermanager__ = __webpack_require__(24);
-var __WEBPACK_IMPORTED_MODULE_3__managers_fontmanager__ = __webpack_require__(50);
+var __WEBPACK_IMPORTED_MODULE_2__managers_vertexbuffermanager__ = __webpack_require__(26);
+var __WEBPACK_IMPORTED_MODULE_3__managers_fontmanager__ = __webpack_require__(38);
 var __WEBPACK_IMPORTED_MODULE_4__common_fontdata__ = __webpack_require__(54);
 var __WEBPACK_IMPORTED_MODULE_5__utilities_matrix__ = __webpack_require__(16);
 var __WEBPACK_IMPORTED_MODULE_6__common_color__ = __webpack_require__(17);
 var __WEBPACK_IMPORTED_MODULE_7__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_8__common_vertex2d__ = __webpack_require__(31);
+var __WEBPACK_IMPORTED_MODULE_8__common_vertex2d__ = __webpack_require__(33);
 var __WEBPACK_IMPORTED_MODULE_9__system_device__ = __webpack_require__(5);
 var __WEBPACK_IMPORTED_MODULE_10__common_defs__ = __webpack_require__(0);
 var __WEBPACK_IMPORTED_MODULE_11__utilities_genfunc__ = __webpack_require__(7);
@@ -10659,11 +11348,12 @@ __webpack_exports__["a"] = VisualComponent2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__utilities_xmlparsehelper__ = __webpack_require__(12);
-var __WEBPACK_IMPORTED_MODULE_1__defs__ = __webpack_require__(0);
+var __WEBPACK_IMPORTED_MODULE_0__managers_fontmanager__ = __webpack_require__(38);
+var __WEBPACK_IMPORTED_MODULE_1__utilities_xmlparsehelper__ = __webpack_require__(12);
+var __WEBPACK_IMPORTED_MODULE_2__defs__ = __webpack_require__(0);
 class FontProperties
 {
-constructor( fontName = null, hAlign = __WEBPACK_IMPORTED_MODULE_1__defs__["_25" ], vAlign = __WEBPACK_IMPORTED_MODULE_1__defs__["_57" ], kerning = 0, spaceCharKerning = 0, lineWrapWidth = -1, lineWrapHeight = 0 )
+constructor( fontName = null, hAlign = __WEBPACK_IMPORTED_MODULE_2__defs__["_25" ], vAlign = __WEBPACK_IMPORTED_MODULE_2__defs__["_57" ], kerning = 0, spaceCharKerning = 0, lineWrapWidth = -1, lineWrapHeight = 0 )
 {
 this.fontName = fontName;
 this.hAlign = hAlign;
@@ -10672,6 +11362,8 @@ this.kerning = kerning;
 this.spaceCharKerning = spaceCharKerning;
 this.lineWrapWidth = lineWrapWidth;
 this.lineWrapHeight = 0;
+if( this.fontName )
+__WEBPACK_IMPORTED_MODULE_0__managers_fontmanager__["a" ].isFont( this.fontName );
 }
 copy( obj )
 {
@@ -10682,12 +11374,14 @@ this.kerning = obj.kerning;
 this.spaceCharKerning = obj.spaceCharKerning;
 this.lineWrapWidth = obj.lineWrapWidth;
 this.lineWrapHeight = obj.lineWrapHeight;
+__WEBPACK_IMPORTED_MODULE_0__managers_fontmanager__["a" ].isFont( this.fontName );
 }
 loadFromNode( node )
 {
 let attr = node.getAttribute( 'fontName' );
 if( attr )
 this.fontName = attr;
+__WEBPACK_IMPORTED_MODULE_0__managers_fontmanager__["a" ].isFont( this.fontName );
 let attrNode = node.getElementsByTagName( 'attributes' );
 if( attrNode.length )
 {
@@ -10707,8 +11401,8 @@ this.lineWrapHeight = Number(attr);
 let alignmentNode = node.getElementsByTagName( 'alignment' );
 if( alignmentNode.length )
 {
-this.hAlign = __WEBPACK_IMPORTED_MODULE_0__utilities_xmlparsehelper__["d" ]( alignmentNode[0], __WEBPACK_IMPORTED_MODULE_1__defs__["_25" ] );
-this.vAlign = __WEBPACK_IMPORTED_MODULE_0__utilities_xmlparsehelper__["k" ]( alignmentNode[0], __WEBPACK_IMPORTED_MODULE_1__defs__["_57" ] );
+this.hAlign = __WEBPACK_IMPORTED_MODULE_1__utilities_xmlparsehelper__["d" ]( alignmentNode[0], __WEBPACK_IMPORTED_MODULE_2__defs__["_25" ] );
+this.vAlign = __WEBPACK_IMPORTED_MODULE_1__utilities_xmlparsehelper__["k" ]( alignmentNode[0], __WEBPACK_IMPORTED_MODULE_2__defs__["_57" ] );
 }
 }
 }
@@ -10718,7 +11412,7 @@ __webpack_exports__["a"] = FontProperties;
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_genfunc__ = __webpack_require__(7);
-var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__ = __webpack_require__(38);
+var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__ = __webpack_require__(41);
 var __WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Box2D_planck_min__);
 class PhysicsWorld2D
 {
@@ -10824,9 +11518,9 @@ __webpack_exports__["a"] = PhysicsWorld3D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_0__2d_object2d__ = __webpack_require__(19);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_settings__ = __webpack_require__(11);
-var __WEBPACK_IMPORTED_MODULE_2__common_dynamicoffset__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_2__common_dynamicoffset__ = __webpack_require__(39);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_assetholder__ = __webpack_require__(10);
 var __WEBPACK_IMPORTED_MODULE_4__utilities_xmlparsehelper__ = __webpack_require__(12);
 class ControlBase extends __WEBPACK_IMPORTED_MODULE_0__2d_object2d__["a" ]
@@ -10883,7 +11577,7 @@ __webpack_exports__["a"] = ControlBase;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 class UILabel extends __WEBPACK_IMPORTED_MODULE_0__uicontrol__["a" ]
 {
@@ -10897,7 +11591,7 @@ __webpack_exports__["a"] = UILabel;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 class UIButton extends __WEBPACK_IMPORTED_MODULE_0__uicontrol__["a" ]
 {
@@ -10911,9 +11605,9 @@ __webpack_exports__["a"] = UIButton;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(33);
-var __WEBPACK_IMPORTED_MODULE_1__utilities_bitmask__ = __webpack_require__(37);
-var __WEBPACK_IMPORTED_MODULE_2__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_1__utilities_bitmask__ = __webpack_require__(40);
+var __WEBPACK_IMPORTED_MODULE_2__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_3__common_defs__ = __webpack_require__(0);
 class UIButtonList extends __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__["a" ]
 {
@@ -11071,7 +11765,7 @@ __webpack_exports__["a"] = UIButtonList;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_0__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 class UICheckBox extends __WEBPACK_IMPORTED_MODULE_0__uicontrol__["a" ]
 {
@@ -11099,10 +11793,10 @@ __webpack_exports__["a"] = UICheckBox;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(33);
-var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_2__utilities_settings__ = __webpack_require__(11);
-var __WEBPACK_IMPORTED_MODULE_3__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_3__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_4__common_defs__ = __webpack_require__(0);
 class UISlider extends __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__["a" ]
 {
@@ -11298,15 +11992,15 @@ __webpack_exports__["a"] = UISlider;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(33);
-var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_0__uisubcontrol__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_1__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_3__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_4__system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_5__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_7__utilities_xmlparsehelper__ = __webpack_require__(12);
-var __WEBPACK_IMPORTED_MODULE_8__uicontrolfactory__ = __webpack_require__(40);
+var __WEBPACK_IMPORTED_MODULE_8__uicontrolfactory__ = __webpack_require__(43);
 var __WEBPACK_IMPORTED_MODULE_9__common_defs__ = __webpack_require__(0);
 const IN_VIEWABLE_AREA = 1;
 const NEW_ACTIVE_CTRL = 2;
@@ -11829,7 +12523,7 @@ __webpack_exports__["a"] = UIScrollBox;
 var __WEBPACK_IMPORTED_MODULE_0__utilities_timer__ = __webpack_require__(29);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_2__common_size__ = __webpack_require__(1);
-var __WEBPACK_IMPORTED_MODULE_3__uicontrol__ = __webpack_require__(21);
+var __WEBPACK_IMPORTED_MODULE_3__uicontrol__ = __webpack_require__(24);
 var __WEBPACK_IMPORTED_MODULE_4__script_scriptmanager__ = __webpack_require__(13);
 var __WEBPACK_IMPORTED_MODULE_5__common_defs__ = __webpack_require__(0);
 var __WEBPACK_IMPORTED_MODULE_6__utilities_xmlparsehelper__ = __webpack_require__(12);
@@ -12104,7 +12798,7 @@ __webpack_exports__["a"] = UIMeter;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_0__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 class MenuTree
 {
@@ -12523,14 +13217,14 @@ __webpack_exports__["a"] = PlayList;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__mathsymbol__ = __webpack_require__(103);
-var __WEBPACK_IMPORTED_MODULE_1__stripset__ = __webpack_require__(104);
-var __WEBPACK_IMPORTED_MODULE_2__stripstop__ = __webpack_require__(105);
-var __WEBPACK_IMPORTED_MODULE_3__paycombo__ = __webpack_require__(106);
-var __WEBPACK_IMPORTED_MODULE_4__paytableset__ = __webpack_require__(107);
-var __WEBPACK_IMPORTED_MODULE_5__weightedtable__ = __webpack_require__(108);
+var __WEBPACK_IMPORTED_MODULE_0__mathsymbol__ = __webpack_require__(110);
+var __WEBPACK_IMPORTED_MODULE_1__stripset__ = __webpack_require__(111);
+var __WEBPACK_IMPORTED_MODULE_2__stripstop__ = __webpack_require__(112);
+var __WEBPACK_IMPORTED_MODULE_3__paycombo__ = __webpack_require__(113);
+var __WEBPACK_IMPORTED_MODULE_4__paytableset__ = __webpack_require__(114);
+var __WEBPACK_IMPORTED_MODULE_5__weightedtable__ = __webpack_require__(115);
 var __WEBPACK_IMPORTED_MODULE_6__valuetable__ = __webpack_require__(60);
-var __WEBPACK_IMPORTED_MODULE_7__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_7__slotdefs__ = __webpack_require__(8);
 class SlotMath
 {
 constructor( group, id )
@@ -12952,10 +13646,10 @@ __webpack_exports__["a"] = StateMessage;
 __webpack_exports__["a"] = loadScripts;
 var __WEBPACK_IMPORTED_MODULE_0__library_utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_1__library_script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_2__library_managers_eventmanager__ = __webpack_require__(8);
-var __WEBPACK_IMPORTED_MODULE_3__library_managers_soundmanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_2__library_managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_3__library_managers_soundmanager__ = __webpack_require__(20);
 var __WEBPACK_IMPORTED_MODULE_4__library_common_color__ = __webpack_require__(17);
-var __WEBPACK_IMPORTED_MODULE_5__utilityscripts__ = __webpack_require__(44);
+var __WEBPACK_IMPORTED_MODULE_5__utilityscripts__ = __webpack_require__(45);
 var __WEBPACK_IMPORTED_MODULE_6__library_common_defs__ = __webpack_require__(0);
 class Control_OnActive
 {
@@ -13529,11 +14223,11 @@ __WEBPACK_IMPORTED_MODULE_1__library_script_scriptmanager__["a" ].set( 'Control_
 __webpack_exports__["a"] = loadScripts;
 var __WEBPACK_IMPORTED_MODULE_0__library_utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_1__library_script_scriptmanager__ = __webpack_require__(13);
-var __WEBPACK_IMPORTED_MODULE_2__library_managers_eventmanager__ = __webpack_require__(8);
-var __WEBPACK_IMPORTED_MODULE_3__library_managers_soundmanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_2__library_managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_3__library_managers_soundmanager__ = __webpack_require__(20);
 var __WEBPACK_IMPORTED_MODULE_4__library_common_color__ = __webpack_require__(17);
-var __WEBPACK_IMPORTED_MODULE_5__utilityscripts__ = __webpack_require__(44);
-var __WEBPACK_IMPORTED_MODULE_6__library_utilities_easingfunc_js__ = __webpack_require__(113);
+var __WEBPACK_IMPORTED_MODULE_5__utilityscripts__ = __webpack_require__(45);
+var __WEBPACK_IMPORTED_MODULE_6__library_utilities_easingfunc_js__ = __webpack_require__(120);
 var __WEBPACK_IMPORTED_MODULE_7__library_common_defs__ = __webpack_require__(0);
 class Symbol_Init extends __WEBPACK_IMPORTED_MODULE_5__utilityscripts__["b" ]
 {
@@ -14086,9 +14780,9 @@ __webpack_exports__["d"] = valueTo;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__library_managers_shadermanager__ = __webpack_require__(19);
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_shadermanager__ = __webpack_require__(22);
 var __WEBPACK_IMPORTED_MODULE_1__library_managers_texturemanager__ = __webpack_require__(14);
-var __WEBPACK_IMPORTED_MODULE_2__library_managers_vertexbuffermanager__ = __webpack_require__(24);
+var __WEBPACK_IMPORTED_MODULE_2__library_managers_vertexbuffermanager__ = __webpack_require__(26);
 var __WEBPACK_IMPORTED_MODULE_3__library_managers_loadmanager__ = __webpack_require__(30);
 var __WEBPACK_IMPORTED_MODULE_4__library_objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_5__library_utilities_settings__ = __webpack_require__(11);
@@ -14096,16 +14790,17 @@ var __WEBPACK_IMPORTED_MODULE_6__library_2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_7__library_utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_8__library_managers_signalmanager__ = __webpack_require__(15);
 var __WEBPACK_IMPORTED_MODULE_9__library_system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_10__state_titlescreenstate__ = __webpack_require__(42);
+var __WEBPACK_IMPORTED_MODULE_10__state_titlescreenstate__ = __webpack_require__(44);
 var __WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__ = __webpack_require__(61);
 var __WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__ = __webpack_require__(64);
-var __WEBPACK_IMPORTED_MODULE_13__gamestate__ = __webpack_require__(23);
+var __WEBPACK_IMPORTED_MODULE_13__state_wheeldemostate__ = __webpack_require__(74);
+var __WEBPACK_IMPORTED_MODULE_14__gamestate__ = __webpack_require__(21);
 const MIN_LOAD_TIME = 500;
-class LoadState extends __WEBPACK_IMPORTED_MODULE_13__gamestate__["f" ]
+class LoadState extends __WEBPACK_IMPORTED_MODULE_14__gamestate__["g" ]
 {
 constructor( stateMessage, stateChangeCallback )
 {
-super( __WEBPACK_IMPORTED_MODULE_13__gamestate__["b" ], stateMessage.loadState, stateChangeCallback );
+super( __WEBPACK_IMPORTED_MODULE_14__gamestate__["b" ], stateMessage.loadState, stateChangeCallback );
 this.stateMessage.loadState = stateMessage.loadState;
 this.stateMessage.unloadState = stateMessage.unloadState;
 this.loadAnim = new __WEBPACK_IMPORTED_MODULE_6__library_2d_sprite2d__["a" ]( __WEBPACK_IMPORTED_MODULE_4__library_objectdatamanager_objectdatamanager__["a" ].getData( '(loadingScreen)', 'loadAnim' ) );
@@ -14114,17 +14809,23 @@ this.loadAnim.transform();
 this.maxLoadCount = 0;
 this.loadFont = null;
 this.displayProgress = false;
-if( (stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_13__gamestate__["a" ]) && !__WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__["d" ]() )
+if( (stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["c" ]) && !__WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["d" ]() )
+{
+__WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["c" ]();
+this.displayProgress = true;
+this.maxLoadCount = __WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["a" ];
+}
+else if( (stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["a" ]) && !__WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__["d" ]() )
 {
 __WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__["c" ]();
 this.displayProgress = true;
 this.maxLoadCount = __WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__["a" ];
 }
-else if( (stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_13__gamestate__["c" ]) && !__WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["d" ]() )
+if( (stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["f" ]) && !__WEBPACK_IMPORTED_MODULE_13__state_wheeldemostate__["d" ]() )
 {
-__WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["c" ]();
+__WEBPACK_IMPORTED_MODULE_13__state_wheeldemostate__["b" ]();
 this.displayProgress = true;
-this.maxLoadCount = __WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["a" ];
+this.maxLoadCount = __WEBPACK_IMPORTED_MODULE_13__state_wheeldemostate__["a" ];
 }
 if( this.displayProgress )
 {
@@ -14160,12 +14861,14 @@ let loadAnim = this.loadAnimUpdate.bind(this);
 this.loadAnimInterval = setInterval( () => loadAnim(), 83 );
 __WEBPACK_IMPORTED_MODULE_0__library_managers_shadermanager__["a" ].setAllShaderValue4fv( 'additive', [1, 1, 1, 1] );
 __WEBPACK_IMPORTED_MODULE_3__library_managers_loadmanager__["a" ].loadCompleteCallback = this.loadFinished.bind(this);
-if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_13__gamestate__["e" ] )
+if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["e" ] )
 __WEBPACK_IMPORTED_MODULE_10__state_titlescreenstate__["b" ]();
-else if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_13__gamestate__["c" ] )
+else if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["c" ] )
 __WEBPACK_IMPORTED_MODULE_11__state_pachinkostate__["e" ]();
-else if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_13__gamestate__["a" ] )
+else if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["a" ] )
 __WEBPACK_IMPORTED_MODULE_12__state_bigpaybackstate__["e" ]();
+else if( this.stateMessage.loadState === __WEBPACK_IMPORTED_MODULE_14__gamestate__["f" ] )
+__WEBPACK_IMPORTED_MODULE_13__state_wheeldemostate__["e" ]();
 __WEBPACK_IMPORTED_MODULE_3__library_managers_loadmanager__["a" ].load();
 }
 loadFinished()
@@ -14222,10 +14925,10 @@ __webpack_exports__["a"] = LoadState;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(45);
-var __WEBPACK_IMPORTED_MODULE_1__2d_sector2d__ = __webpack_require__(116);
+var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(46);
+var __WEBPACK_IMPORTED_MODULE_1__2d_sector2d__ = __webpack_require__(123);
 var __WEBPACK_IMPORTED_MODULE_2__utilities_assetholder__ = __webpack_require__(10);
-var __WEBPACK_IMPORTED_MODULE_3__common_object__ = __webpack_require__(32);
+var __WEBPACK_IMPORTED_MODULE_3__common_object__ = __webpack_require__(34);
 class BasicStageStrategy2D extends __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__["a" ]
 {
 constructor()
@@ -14302,7 +15005,7 @@ __webpack_exports__["a"] = BasicStageStrategy2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__object2d__ = __webpack_require__(18);
+var __WEBPACK_IMPORTED_MODULE_0__object2d__ = __webpack_require__(19);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_settings__ = __webpack_require__(11);
 var __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_3__2d_actorsprite2d__ = __webpack_require__(62);
@@ -14362,17 +15065,13 @@ if( attr )
 id = Number(attr);
 let sprite = null;
 if( spriteNode[i].tagName === 'sprite' )
-{
 sprite = new __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__["a" ]( __WEBPACK_IMPORTED_MODULE_4__objectdatamanager_objectdatamanager__["a" ].getData( group, objName ), id );
-if( sprite.visualComponent.isFontSprite() )
-sprite.visualComponent.loadFontPropFromNode( spriteNode[i] );
-}
 else
 sprite = new __WEBPACK_IMPORTED_MODULE_3__2d_actorsprite2d__["a" ]( new __WEBPACK_IMPORTED_MODULE_6__common_actordata__["a" ]( spriteNode[i], group, objName, aiName, id ) );
+sprite.load( spriteNode[i] );
 this.spriteAry.push( sprite );
 if( name )
 this.spriteMap.set( name, sprite );
-sprite.loadTransFromNode( spriteNode[i] );
 sprite.initPhysics();
 if( aiName !== '' )
 __WEBPACK_IMPORTED_MODULE_5__managers_signalmanager__["a" ].broadcast_aiCreate( aiName, sprite );
@@ -14426,8 +15125,8 @@ __webpack_exports__["a"] = Sector2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_basestrategy__ = __webpack_require__(118);
-var __WEBPACK_IMPORTED_MODULE_1__common_spritedata__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_0__common_basestrategy__ = __webpack_require__(125);
+var __WEBPACK_IMPORTED_MODULE_1__common_spritedata__ = __webpack_require__(31);
 var __WEBPACK_IMPORTED_MODULE_2__common_actordata__ = __webpack_require__(63);
 var __WEBPACK_IMPORTED_MODULE_3__2d_sprite2d__ = __webpack_require__(4);
 var __WEBPACK_IMPORTED_MODULE_4__2d_actorsprite2d__ = __webpack_require__(62);
@@ -14499,10 +15198,14 @@ spriteId = data.id;
 if( this.spriteMap.has( spriteId ) )
 throw new Error( `Duplicate sprite id (${spriteId})!` );
 if( data.parameters.isSet( __WEBPACK_IMPORTED_MODULE_7__common_defs__["_66" ] ) )
+{
 sprite = new __WEBPACK_IMPORTED_MODULE_3__2d_sprite2d__["a" ]( __WEBPACK_IMPORTED_MODULE_6__objectdatamanager_objectdatamanager__["a" ].getData( data.group, data.objectName ), spriteId );
+}
 else if( data.parameters.isSet( __WEBPACK_IMPORTED_MODULE_7__common_defs__["a" ] ) )
+{
 sprite = new __WEBPACK_IMPORTED_MODULE_4__2d_actorsprite2d__["a" ]( data, spriteId );
-sprite.copyTransform( data );
+}
+sprite.load( data );
 this.spriteMap.set( spriteId, sprite );
 if( pos && !pos.isEmpty() )
 sprite.setPos(pos);
@@ -14575,7 +15278,7 @@ __webpack_exports__["a"] = BasicSpriteStrategy2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(45);
+var __WEBPACK_IMPORTED_MODULE_0__common_ispritestrategy__ = __webpack_require__(46);
 var __WEBPACK_IMPORTED_MODULE_1__common_defs__ = __webpack_require__(0);
 const CMD = 0,
 SPRITE_ID = 1;
@@ -14622,25 +15325,8 @@ __webpack_exports__["a"] = BaseStrategy;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__ = __webpack_require__(65);
-var __WEBPACK_IMPORTED_MODULE_1__symbolsetview__ = __webpack_require__(120);
-class SymbolSetViewStrategy2D extends __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__["a" ]
-{
-constructor()
-{
-super();
-}
-allocateSet()
-{
-return new __WEBPACK_IMPORTED_MODULE_1__symbolsetview__["a" ];
-}
-}
-__webpack_exports__["a"] = SymbolSetViewStrategy2D;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_spritedatasetmap__ = __webpack_require__(121);
-var __WEBPACK_IMPORTED_MODULE_1__symbol2d__ = __webpack_require__(46);
+var __WEBPACK_IMPORTED_MODULE_0__common_spritedatasetmap__ = __webpack_require__(127);
+var __WEBPACK_IMPORTED_MODULE_1__symbol2d__ = __webpack_require__(47);
 class SymbolSetView extends __WEBPACK_IMPORTED_MODULE_0__common_spritedatasetmap__["a" ]
 {
 constructor()
@@ -14682,7 +15368,7 @@ __webpack_exports__["a"] = SymbolSetView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_spritedata__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_0__common_spritedata__ = __webpack_require__(31);
 class SpriteDataSetMap
 {
 constructor()
@@ -14758,24 +15444,7 @@ __webpack_exports__["a"] = SpriteChild2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__ = __webpack_require__(65);
-var __WEBPACK_IMPORTED_MODULE_1__2d_spriteset2d__ = __webpack_require__(124);
-class SpriteSetStrategy2D extends __WEBPACK_IMPORTED_MODULE_0__common_setstrategy__["a" ]
-{
-constructor()
-{
-super();
-}
-allocateSet()
-{
-return new __WEBPACK_IMPORTED_MODULE_1__2d_spriteset2d__["a" ];
-}
-}
-__webpack_exports__["a"] = SpriteSetStrategy2D;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_spritedataary__ = __webpack_require__(125);
+var __WEBPACK_IMPORTED_MODULE_0__common_spritedataary__ = __webpack_require__(130);
 var __WEBPACK_IMPORTED_MODULE_1__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_2__2d_sprite2d__ = __webpack_require__(4);
 class SpriteSet2D extends __WEBPACK_IMPORTED_MODULE_0__common_spritedataary__["a" ]
@@ -14823,7 +15492,7 @@ __webpack_exports__["a"] = SpriteSet2D;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__common_spritedata__ = __webpack_require__(35);
+var __WEBPACK_IMPORTED_MODULE_0__common_spritedata__ = __webpack_require__(31);
 class SpriteDataAry
 {
 constructor()
@@ -14849,11 +15518,11 @@ __webpack_exports__["a"] = SpriteDataAry;
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
 var __WEBPACK_IMPORTED_MODULE_0__utilities_timer__ = __webpack_require__(29);
-var __WEBPACK_IMPORTED_MODULE_1__icycleresults__ = __webpack_require__(127);
+var __WEBPACK_IMPORTED_MODULE_1__icycleresults__ = __webpack_require__(68);
 var __WEBPACK_IMPORTED_MODULE_2__utilities_highresolutiontimer__ = __webpack_require__(2);
 var __WEBPACK_IMPORTED_MODULE_3__common_color__ = __webpack_require__(17);
-var __WEBPACK_IMPORTED_MODULE_4__betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_5__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_4__betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_5__slotdefs__ = __webpack_require__(8);
 const FPS = 18.0;
 class AnimatedCycleResults extends __WEBPACK_IMPORTED_MODULE_1__icycleresults__["a" ]
 {
@@ -14865,7 +15534,7 @@ this.paylineSpriteSet = paylineSpriteSet;
 this.paylineSprite = null;
 this.paylineColor = new __WEBPACK_IMPORTED_MODULE_3__common_color__["a" ]();
 }
-init( slotGroupView, playResult )
+init( slotGroupView )
 {
 this.slotGroupView = slotGroupView;
 }
@@ -14998,314 +15667,7 @@ __webpack_exports__["a"] = AnimatedCycleResults;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-class iCycleResults
-{
-constructor()
-{
-this.playResult = null;
-this.slotGroupView = null;
-this.payCounter = 0;
-this.cycleCounter = 0;
-this.curPayIndex = 0;
-this.firstCycleComplete = false;
-this.cycleResultsActive = false;
-}
-activate()
-{
-this.cycleResultsActive = true;
-this.firstCycleComplete = false;
-this.payCounter = 0;
-this.cycleCounter = 0;
-this.curPayIndex = 0;
-}
-deactivate()
-{
-this.cycleResultsActive = false;
-}
-isActive()
-{
-return this.cycleResultsActive;
-}
-isAnimating()
-{
-return false;
-}
-update()
-{
-}
-transform( matrix, tranformWorldPos )
-{
-}
-render( matrix )
-{
-}
-}
-__webpack_exports__["a"] = iCycleResults;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_1__slotresults__ = __webpack_require__(129);
-var __WEBPACK_IMPORTED_MODULE_2__common_build_defs__ = __webpack_require__(132);
-var __WEBPACK_IMPORTED_MODULE_3__slotdefs__ = __webpack_require__(9);
-class SlotGame
-{
-constructor()
-{
-this.slotResults = new __WEBPACK_IMPORTED_MODULE_1__slotresults__["a" ];
-this.slotGroupAry = [];
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ];
-this.frontPanel = null;
-this.gameMusic = null;
-}
-addSlotGroup( slotGroup )
-{
-this.slotGroupAry.push( slotGroup );
-}
-init()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.init();
-}
-cleanUp()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.cleanUp();
-}
-allowSpinMusic( allow )
-{
-this.allowSpinMusic = allow;
-}
-allowStopSounds( allow )
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.allowStopSounds( allow );
-}
-processGameState()
-{
-switch( this.slotState )
-{
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ]:                this.stateIdle();             break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["q" ]:  this.stateKillCycleResults(); break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ]:         this.statePlaceWager();       break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["o" ]:      this.stateGenerateStops();    break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["n" ]:            this.stateEvaluate();         break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["x" ]:            this.statePreSpin();          break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ]:                this.stateSpin();             break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["u" ]:           this.statePostSpin();         break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["v" ]:       this.statePreAwardWin();      break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["l" ]:      this.stateBonusDecision();    break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["w" ]:           this.statePreBonus();         break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["k" ]:               this.stateBonus();            break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["t" ]:          this.statePostBonus();        break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["s" ]:      this.statePostAwardWin();     break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["z" ]:      this.stateWaitForAward();     break;
-case __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ]:                 this.stateEnd();              break;
-};
-}
-stateIdle()
-{
-}
-stateKillCycleResults()
-{
-this.killCycleResults();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ];
-}
-statePlaceWager()
-{
-__WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].deductBet();
-if( this.frontPanel )
-this.frontPanel.statePlaceWager( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].getCredits() );
-if( this.gameMusic )
-this.gameMusic.startMusic();
-this.slotResults.clear();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["o" ];
-}
-stateGenerateStops()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupModel.generateStops();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["n" ];
-}
-stateEvaluate()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupModel.evaluate();
-this.slotResults.sortPays();
-this.slotResults.addUpWin();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["x" ];
-}
-statePreSpin()
-{
-if( this.frontPanel )
-this.frontPanel.statePreSpin();
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.startSpin();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ];
-}
-stateSpin()
-{
-let stopped = true;
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-{
-if( !this.slotGroupAry[i].slotGroupView.isSpinState( __WEBPACK_IMPORTED_MODULE_3__slotdefs__["E" ] ) )
-{
-stopped = false;
-break;
-}
-}
-if( stopped )
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["u" ];
-}
-statePostSpin()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["v" ];
-}
-statePreAwardWin()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["l" ];
-}
-stateBonusDecision()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["w" ];
-}
-statePreBonus()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["k" ];
-}
-stateBonus()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["t" ];
-}
-statePostBonus()
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["s" ];
-}
-statePostAwardWin()
-{
-if( this.slotResults.isWin() )
-{
-__WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].addAward( this.slotResults.getTotalWin() );
-if( this.frontPanel )
-this.frontPanel.startBangUp( 
-this.slotResults.getTotalWin(), __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].getCredits() );
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.activateCycleResults();
-}
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["z" ];
-}
-stateWaitForAward()
-{
-if( this.frontPanel )
-{
-if( !this.frontPanel.isBanging() )
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ];
-}
-else
-{
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["m" ];
-}
-}
-stateEnd()
-{
-if( this.frontPanel )
-this.frontPanel.stateEnd( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].allowPlay() );
-if( this.gameMusic )
-this.gameMusic.setTimeOut();
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ];
-}
-handleEvent( event )
-{
-if( __WEBPACK_IMPORTED_MODULE_2__common_build_defs__["a" ] )
-{
-if( (this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ]) && (event.type === 'mouseup') )
-{
-if( this.isCycleResultsActive() )
-this.killCycleResults();
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].handleEvent( event );
-}
-}
-}
-update()
-{
-if( this.isCycleResultsActive() )
-{
-if( !this.isCycleResultsAnimating() )
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.startCycleResultsAnimation();
-}
-}
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.update();
-}
-transform()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.transform();
-}
-render( matrix )
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.render( matrix );
-}
-playGame( control )
-{
-if( this.frontPanel )
-this.frontPanel.playGame( control, this.slotState );
-if( this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["p" ] )
-{
-if( __WEBPACK_IMPORTED_MODULE_0__betmanager__["a" ].allowPlay() )
-{
-if( this.isCycleResultsActive() )
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["q" ];
-else
-this.slotState = __WEBPACK_IMPORTED_MODULE_3__slotdefs__["r" ];
-}
-}
-else if( this.slotState === __WEBPACK_IMPORTED_MODULE_3__slotdefs__["y" ] )
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-this.slotGroupAry[i].slotGroupView.stopSpin();
-}
-}
-setFrontPanel( frontPanel )
-{
-this.frontPanel = frontPanel;
-}
-setGameMusic( gameMusic )
-{
-this.gameMusic = gameMusic;
-}
-isCycleResultsActive()
-{
-let active = false;
-for( let i = 0; i < this.slotGroupAry.length && !active; ++i )
-active = this.slotGroupAry[i].slotGroupView.isCycleResultsActive();
-return active;
-}
-isCycleResultsAnimating()
-{
-let animating = false;
-for( let i = 0; i < this.slotGroupAry.length && !animating; ++i )
-animating = this.slotGroupAry[i].slotGroupView.isCycleResultsAnimating();
-return animating;
-}
-killCycleResults()
-{
-for( let i = 0; i < this.slotGroupAry.length; ++i )
-{
-this.slotGroupAry[i].slotGroupView.stopCycleResultsAnimation();
-this.slotGroupAry[i].slotGroupView.deactivateCycleResults();
-}
-}
-}
-__webpack_exports__["a"] = SlotGame;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__playresult__ = __webpack_require__(130);
+var __WEBPACK_IMPORTED_MODULE_0__playresult__ = __webpack_require__(133);
 class SlotResults
 {
 constructor()
@@ -15349,7 +15711,7 @@ __webpack_exports__["a"] = SlotResults;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__pay__ = __webpack_require__(131);
+var __WEBPACK_IMPORTED_MODULE_0__pay__ = __webpack_require__(134);
 class PlayResult
 {
 constructor()
@@ -15416,9 +15778,9 @@ __webpack_exports__["a"] = DEBUG;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__igamemusic__ = __webpack_require__(134);
+var __WEBPACK_IMPORTED_MODULE_0__igamemusic__ = __webpack_require__(137);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_timer__ = __webpack_require__(29);
-var __WEBPACK_IMPORTED_MODULE_2__managers_soundmanager__ = __webpack_require__(22);
+var __WEBPACK_IMPORTED_MODULE_2__managers_soundmanager__ = __webpack_require__(20);
 var __WEBPACK_IMPORTED_MODULE_3__utilities_highresolutiontimer__ = __webpack_require__(2);
 class BaseGameMusic extends __WEBPACK_IMPORTED_MODULE_0__igamemusic__["a" ]
 {
@@ -15472,7 +15834,7 @@ __webpack_exports__["a"] = BaseGameMusic;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(8);
 class iGameMusic
 {
 constructor()
@@ -15492,87 +15854,7 @@ __webpack_exports__["a"] = iGameMusic;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__library_slot_ifrontpanel__ = __webpack_require__(136);
-var __WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_2__library_gui_menumanager__ = __webpack_require__(20);
-var __WEBPACK_IMPORTED_MODULE_3__library_slot_slotdefs__ = __webpack_require__(9);
-class FrontPanel extends __WEBPACK_IMPORTED_MODULE_0__library_slot_ifrontpanel__["a" ]
-{
-constructor()
-{
-super();
-this.winMeter = null;
-this.creditMeter = null;
-this.playBtn = null;
-this.totalBetCtrl = null;
-}
-setButtons( playBtn, totalBetCtrl )
-{
-this.playBtn = playBtn;
-this.totalBetCtrl = totalBetCtrl;
-let incBtn = this.totalBetCtrl.findControlByName( 'total_bet_inc_btn' );
-let decBtn = this.totalBetCtrl.findControlByName( 'total_bet_dec_btn' );
-incBtn.connect_ExecutionAction( this.totalBetCallBack.bind(this) );
-decBtn.connect_ExecutionAction( this.totalBetCallBack.bind(this) );
-}
-setMeters( winMeter, creditMeter )
-{
-this.winMeter = winMeter;
-this.creditMeter = creditMeter;
-if( this.creditMeter )
-this.creditMeter.set( __WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__["a" ].getCredits() );
-}
-statePlaceWager( credits )
-{
-if( this.winMeter )
-this.winMeter.clear();
-if( this.creditMeter )
-this.creditMeter.set( credits );
-if( this.totalBetCtrl )
-this.totalBetCtrl.disableControl();
-}
-stateEnd( allowPlay )
-{
-if( allowPlay )
-{
-if( this.totalBetCtrl )
-this.totalBetCtrl.enableControl();
-}
-}
-startBangUp( win, credits )
-{
-if( this.winMeter )
-this.winMeter.startBangUp( win );
-if( this.creditMeter )
-this.creditMeter.startBangUp( credits );
-}
-isBanging()
-{
-let result = false;
-if( this.winMeter )
-result |= this.winMeter.isBanging();
-if( this.creditMeter )
-result |= this.creditMeter.isBanging();
-return result;
-}
-fastBang()
-{
-if( this.winMeter )
-this.winMeter.fastBang();
-if( this.creditMeter )
-this.creditMeter.fastBang();
-}
-totalBetCallBack( control )
-{
-let totalBetMeter = __WEBPACK_IMPORTED_MODULE_2__library_gui_menumanager__["a" ].getMenuControl( 'base_game_ui', 'total_bet_meter' );
-__WEBPACK_IMPORTED_MODULE_1__library_slot_betmanager__["a" ].setLineBet( totalBetMeter.activeIndex + 1 );
-}
-}
-__webpack_exports__["a"] = FrontPanel;
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_0__slotdefs__ = __webpack_require__(8);
 class iFrontPanel
 {
 constructor()
@@ -15606,46 +15888,12 @@ __webpack_exports__["a"] = iFrontPanel;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-__webpack_exports__["a"] = create;
-var __WEBPACK_IMPORTED_MODULE_0__slotgroupmodel__ = __webpack_require__(138);
-var __WEBPACK_IMPORTED_MODULE_1__reelgroupview__ = __webpack_require__(142);
-var __WEBPACK_IMPORTED_MODULE_2__wheelgroupview__ = __webpack_require__(144);
-var __WEBPACK_IMPORTED_MODULE_3__slotgroup__ = __webpack_require__(146);
-var __WEBPACK_IMPORTED_MODULE_4__slotdefs__ = __webpack_require__(9);
-function create(
-slotDevice,
-slotStripSetId,
-paytableSetId,
-slotMath,
-viewCfgNode,
-viewSpinProfileCfgNode,
-symbolSetView,
-playResult,
-cycleResults = null )
-{
-var slotGroupModel = new __WEBPACK_IMPORTED_MODULE_0__slotgroupmodel__["a" ]( slotMath, playResult );
-slotGroupModel.create( slotStripSetId, paytableSetId );
-if( slotDevice === __WEBPACK_IMPORTED_MODULE_4__slotdefs__["c" ] )
-var slotGroupView = new __WEBPACK_IMPORTED_MODULE_1__reelgroupview__["a" ]( slotGroupModel );
-else if( slotDevice === __WEBPACK_IMPORTED_MODULE_4__slotdefs__["d" ] )
-var slotGroupView = new __WEBPACK_IMPORTED_MODULE_2__wheelgroupview__["a" ]( slotGroupModel );
-else
-throw new Error( `Undefined slot device!` );
-slotGroupView.create( viewCfgNode, symbolSetView, cycleResults );
-slotGroupView.loadSpinProfileFromNode( viewSpinProfileCfgNode );
-if( cycleResults )
-cycleResults.init( slotGroupView );
-return new __WEBPACK_IMPORTED_MODULE_3__slotgroup__["a" ]( slotGroupModel, slotGroupView );
-}
-}),
-(function(module, __webpack_exports__, __webpack_require__) {
-"use strict";
-var __WEBPACK_IMPORTED_MODULE_0__utilities_mersenne_twister__ = __webpack_require__(139);
-var __WEBPACK_IMPORTED_MODULE_1__slotstripmodel__ = __webpack_require__(140);
-var __WEBPACK_IMPORTED_MODULE_2__symbolposition__ = __webpack_require__(141);
-var __WEBPACK_IMPORTED_MODULE_3__betmanager__ = __webpack_require__(28);
-var __WEBPACK_IMPORTED_MODULE_4__slotmathmanager__ = __webpack_require__(41);
-var __WEBPACK_IMPORTED_MODULE_5__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_0__utilities_mersenne_twister__ = __webpack_require__(140);
+var __WEBPACK_IMPORTED_MODULE_1__slotstripmodel__ = __webpack_require__(141);
+var __WEBPACK_IMPORTED_MODULE_2__symbolposition__ = __webpack_require__(142);
+var __WEBPACK_IMPORTED_MODULE_3__betmanager__ = __webpack_require__(25);
+var __WEBPACK_IMPORTED_MODULE_4__slotmathmanager__ = __webpack_require__(36);
+var __WEBPACK_IMPORTED_MODULE_5__slotdefs__ = __webpack_require__(8);
 class SlotGroupModel
 {
 constructor( slotMath, playResult )
@@ -15965,8 +16213,8 @@ __webpack_exports__["a"] = SymbolPosition;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotgroupview__ = __webpack_require__(66);
-var __WEBPACK_IMPORTED_MODULE_1__reelstripview__ = __webpack_require__(143);
+var __WEBPACK_IMPORTED_MODULE_0__slotgroupview__ = __webpack_require__(72);
+var __WEBPACK_IMPORTED_MODULE_1__reelstripview__ = __webpack_require__(144);
 class ReelGroupView extends __WEBPACK_IMPORTED_MODULE_0__slotgroupview__["a" ]
 {
 constructor( slotGroupModel )
@@ -16014,18 +16262,18 @@ __webpack_exports__["a"] = ReelGroupView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotstripview__ = __webpack_require__(67);
+var __WEBPACK_IMPORTED_MODULE_0__slotstripview__ = __webpack_require__(73);
 var __WEBPACK_IMPORTED_MODULE_1__utilities_timer__ = __webpack_require__(29);
-var __WEBPACK_IMPORTED_MODULE_2__spinprofile__ = __webpack_require__(47);
-var __WEBPACK_IMPORTED_MODULE_3__symbol2d__ = __webpack_require__(46);
+var __WEBPACK_IMPORTED_MODULE_2__spinprofile__ = __webpack_require__(48);
+var __WEBPACK_IMPORTED_MODULE_3__symbol2d__ = __webpack_require__(47);
 var __WEBPACK_IMPORTED_MODULE_4__2d_sprite2d__ = __webpack_require__(4);
-var __WEBPACK_IMPORTED_MODULE_5__common_point__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_5__common_point__ = __webpack_require__(9);
 var __WEBPACK_IMPORTED_MODULE_6__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_7__utilities_highresolutiontimer__ = __webpack_require__(2);
-var __WEBPACK_IMPORTED_MODULE_8__managers_soundmanager__ = __webpack_require__(22);
-var __WEBPACK_IMPORTED_MODULE_9__managers_eventmanager__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_8__managers_soundmanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_9__managers_eventmanager__ = __webpack_require__(6);
 var __WEBPACK_IMPORTED_MODULE_10__system_device__ = __webpack_require__(5);
-var __WEBPACK_IMPORTED_MODULE_11__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_11__slotdefs__ = __webpack_require__(8);
 class ReelStripView extends __WEBPACK_IMPORTED_MODULE_0__slotstripview__["a" ]
 {
 constructor( slotStripModel, symbolSetView, id )
@@ -16041,7 +16289,7 @@ this.symbolAry = [];
 this.symPosAry = [];
 this.stencilMaskSprite;
 this.spriteAry = [];
-this.spin = false;
+this.spinReel = false;
 this.spinDistance = 0;
 this.velocity = 0;
 this.acceleration = 0;
@@ -16176,7 +16424,7 @@ update()
 {
 for( let i = 0; i < this.symbolAry.length; ++i )
 this.symbolAry[i].update();
-if( this.spin )
+if( this.spinReel )
 {
 switch( this.spinState )
 {
@@ -16250,7 +16498,7 @@ this.acceleration += drag;
 if( (this.spinDistance < 0.0) || this.spinTimer.expired() )
 {
 this.velocity = 0.0;
-this.spin = false;
+this.spinReel = false;
 this.disableSpinTimer = false;
 this.finalizeSymbPos();
 this.spinState = __WEBPACK_IMPORTED_MODULE_11__slotdefs__["E" ];
@@ -16382,11 +16630,11 @@ this.symbolAry[i].render( matrix );
 }
 startSpin()
 {
-this.spin = true;
+this.spinReel = true;
 }
 stopSpin()
 {
-if( this.spin && this.spinState < __WEBPACK_IMPORTED_MODULE_11__slotdefs__["A" ] )
+if( this.spinReel && this.spinState < __WEBPACK_IMPORTED_MODULE_11__slotdefs__["A" ] )
 this.disableSpinTimer = true;
 }
 connect_SpinState( callback )
@@ -16404,9 +16652,9 @@ __webpack_exports__["a"] = ReelStripView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotgroupview__ = __webpack_require__(66);
-var __WEBPACK_IMPORTED_MODULE_1__wheelview__ = __webpack_require__(145);
-var __WEBPACK_IMPORTED_MODULE_2__slotdefs__ = __webpack_require__(9);
+var __WEBPACK_IMPORTED_MODULE_0__slotgroupview__ = __webpack_require__(72);
+var __WEBPACK_IMPORTED_MODULE_1__wheelview__ = __webpack_require__(146);
+var __WEBPACK_IMPORTED_MODULE_2__slotdefs__ = __webpack_require__(8);
 class WheelGroupView extends __WEBPACK_IMPORTED_MODULE_0__slotgroupview__["a" ]
 {
 constructor( slotGroupModel )
@@ -16457,15 +16705,17 @@ __webpack_exports__["a"] = WheelGroupView;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__slotstripview__ = __webpack_require__(67);
+var __WEBPACK_IMPORTED_MODULE_0__slotstripview__ = __webpack_require__(73);
 var __WEBPACK_IMPORTED_MODULE_1__2d_sprite2d__ = __webpack_require__(4);
-var __WEBPACK_IMPORTED_MODULE_2__slot_symbol2d__ = __webpack_require__(46);
-var __WEBPACK_IMPORTED_MODULE_3__spinprofile__ = __webpack_require__(47);
+var __WEBPACK_IMPORTED_MODULE_2__slot_symbol2d__ = __webpack_require__(47);
+var __WEBPACK_IMPORTED_MODULE_3__spinprofile__ = __webpack_require__(48);
 var __WEBPACK_IMPORTED_MODULE_4__utilities_timer__ = __webpack_require__(29);
 var __WEBPACK_IMPORTED_MODULE_5__objectdatamanager_objectdatamanager__ = __webpack_require__(3);
 var __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__ = __webpack_require__(2);
-var __WEBPACK_IMPORTED_MODULE_7__slotdefs__ = __webpack_require__(9);
-var __WEBPACK_IMPORTED_MODULE_8__common_defs__ = __webpack_require__(0);
+var __WEBPACK_IMPORTED_MODULE_7__managers_eventmanager__ = __webpack_require__(6);
+var __WEBPACK_IMPORTED_MODULE_8__slotdefs__ = __webpack_require__(8);
+var __WEBPACK_IMPORTED_MODULE_9__common_defs__ = __webpack_require__(0);
+var __WEBPACK_IMPORTED_MODULE_10__utilities_xmlparsehelper__ = __webpack_require__(12);
 class WheelView extends __WEBPACK_IMPORTED_MODULE_0__slotstripview__["a" ]
 {
 constructor( slotStripModel, symbolSetView, id )
@@ -16479,10 +16729,10 @@ this.saftyCheckDegree = 0;
 this.spriteAry = [];
 this.wheelSpriteAry = [];
 this.symbolAry = [];
-this.spinDir = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["a" ];
+this.spinDir = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["a" ];
 this.spinProfile = new __WEBPACK_IMPORTED_MODULE_3__spinprofile__["a" ];
 this.spinWheel = false;
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["E" ];
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["E" ];
 this.velocity = 0;
 this.acceleration = 0;
 this.spinDirVector = -1;
@@ -16491,18 +16741,28 @@ this.spinTimer = new __WEBPACK_IMPORTED_MODULE_4__utilities_timer__["a" ];
 this.spinTimer.setDisableValue( true );
 this.winPointDegree;
 this.rotation = 0;
-this.currentRotation = 0;
+this.extRotation = 0;
+this.distToStop = 0;
+this.lastVelocity = 0;
+this.maxRangeToStop = 0;
+this.minRangeToStop = 0;
+this.inRangeToStop = false;
 this.PI_2 = Math.PI * 2;
+this.gaffOffset = 0;
+this.gaffSpinDirVector = -1;
 }
 create( node, group )
 {
 let attr = node.getElementsByTagName( 'translation' );
 if( attr )
-this.loadTransFromNode( attr[0] );
-attr = node.getAttribute( 'spinDirection' );
-if( attr && (Number( attr ) === __WEBPACK_IMPORTED_MODULE_7__slotdefs__["b" ]) )
 {
-this.spinDir = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["b" ];
+this.loadTransFromNode( attr[0] );
+this.size = __WEBPACK_IMPORTED_MODULE_10__utilities_xmlparsehelper__["j" ]( attr[0] );
+}
+attr = node.getAttribute( 'spinDirection' );
+if( attr && (Number( attr ) === __WEBPACK_IMPORTED_MODULE_8__slotdefs__["b" ]) )
+{
+this.spinDir = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["b" ];
 this.spinDirVector = 1;
 }
 this.loadWheelSprites( node, group );
@@ -16580,6 +16840,25 @@ this.spriteAry[i].cleanUp();
 }
 handleEvent( event )
 {
+if( this.isPointInStrip( __WEBPACK_IMPORTED_MODULE_7__managers_eventmanager__["a" ].mouseX, __WEBPACK_IMPORTED_MODULE_7__managers_eventmanager__["a" ].mouseY ) )
+{
+if( __WEBPACK_IMPORTED_MODULE_7__managers_eventmanager__["a" ].mouseY < this.collisionCenter.y )
+this.gaffOffset++;
+else
+this.gaffOffset--;
+this.gaffWheelPos();
+}
+}
+gaffWheelPos()
+{
+this.slotStripModel.setGaffStop( this.gaffOffset );
+this.rotation = this.degreePerWedge * this.slotStripModel.gaffStop;
+if( this.spinDir === __WEBPACK_IMPORTED_MODULE_8__slotdefs__["a" ] )
+this.rotation = this.PI_2 - this.rotation;
+this.extRotation = this.rotation;
+if( this.rotation >= this.PI_2 )
+this.rotation -= this.PI_2;
+this.setRotXYZ( 0, 0, this.rotation * this.spinDirVector, false );
 }
 getSymbol( index )
 {
@@ -16601,10 +16880,10 @@ if( this.spinWheel )
 {
 switch( this.spinState )
 {
-case __WEBPACK_IMPORTED_MODULE_7__slotdefs__["E" ]:
+case __WEBPACK_IMPORTED_MODULE_8__slotdefs__["E" ]:
 {
-if( this.spinDir === __WEBPACK_IMPORTED_MODULE_7__slotdefs__["a" ] )
-this.winPointDegree = this.PI_2 - (this.degreePerWedge * (this.slotStripModel.stop));
+if( this.spinDir === __WEBPACK_IMPORTED_MODULE_8__slotdefs__["a" ] )
+this.winPointDegree = this.PI_2 - (this.degreePerWedge * this.slotStripModel.stop);
 else
 {
 if( this.slotStripModel.stop === 0 )
@@ -16616,9 +16895,11 @@ this.velocity = 0.0;
 this.acceleration = this.spinProfile.accelation;
 this.saftyCheckDegree = this.degreePerWedge / this.spinProfile.safetyCheckDivisor;
 this.spinTimer.set( this.spinProfile.startDelay );
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["C" ];
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["C" ];
+this.gaffOffset = 0;
+this.inRangeToStop = false;
 }
-case __WEBPACK_IMPORTED_MODULE_7__slotdefs__["C" ]:
+case __WEBPACK_IMPORTED_MODULE_8__slotdefs__["C" ]:
 {
 if( this.spinTimer.expired() )
 {
@@ -16629,71 +16910,84 @@ if( this.velocity >= this.spinProfile.maxVelocity )
 {
 this.velocity = this.spinProfile.maxVelocity;
 this.spinTimer.set( this.spinProfile.maxVelocityTime );
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["B" ];
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["B" ];
 }
 this.incSpin( this.velocity );
 }
 break;
 }
-case __WEBPACK_IMPORTED_MODULE_7__slotdefs__["B" ]:
+case __WEBPACK_IMPORTED_MODULE_8__slotdefs__["B" ]:
 {
 this.incSpin( this.velocity );
 this.spinTimer.disable( this.disableSpinTimer );
 if( this.spinTimer.expired() && (this.rotation < this.winPointDegree) )
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["A" ];
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["A" ];
 break;
 }
-case __WEBPACK_IMPORTED_MODULE_7__slotdefs__["A" ]:
+case __WEBPACK_IMPORTED_MODULE_8__slotdefs__["A" ]:
 {
 this.incSpin( this.velocity );
-if( (this.currentRotation > this.winPointDegree) )
+if( this.extRotation > this.winPointDegree )
 {
 let vel = this.spinProfile.maxVelocity * 1000.0;
 this.acceleration = 
 (this.velocity / ((Math.PI * (4.0 / vel)) * this.spinProfile.decelerationRotationCount)) / 1000.0;
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["D" ];
+this.distToStop = (this.PI_2 * this.spinProfile.decelerationRotationCount) - (this.extRotation - this.winPointDegree);
+this.maxRangeToStop = this.winPointDegree + this.saftyCheckDegree;
+this.minRangeToStop = this.winPointDegree - this.saftyCheckDegree;
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["D" ];
 }
 break;
 }
-case __WEBPACK_IMPORTED_MODULE_7__slotdefs__["D" ]:
+case __WEBPACK_IMPORTED_MODULE_8__slotdefs__["D" ]:
 {
-let elapsedTime = __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__["a" ].elapsedTime;
-this.velocity -= this.acceleration * elapsedTime;
-if( this.velocity < 0.0 )
+this.velocity -= this.acceleration * __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__["a" ].elapsedTime;
+if( this.velocity > 0.0 )
+this.lastVelocity = this.velocity
+this.distToStop -= this.lastVelocity * __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__["a" ].elapsedTime;
+let timeToStop = false;
+if( (this.distToStop < 0.0) || (this.velocity < 0.0) )
 {
-this.velocity = 0.0;
-this.spinWheel = false;
-this.disableSpinTimer = false;
-let maxRot = this.winPointDegree + this.saftyCheckDegree;
-let minRot = this.winPointDegree - this.saftyCheckDegree;
-if( (this.slotStripModel.stop === 0) && (this.rotation < 6.0) )
+let futureRotation = this.rotation + (this.lastVelocity * __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__["a" ].elapsedTime);
+if( this.slotStripModel.stop === 0 )
 {
-if( this.rotation > this.saftyCheckDegree )
+if( futureRotation > Math.PI )
 {
-this.rotation = maxRot;
-this.incSpin( this.velocity );
-}
+this.maxRangeToStop = this.PI_2 + this.saftyCheckDegree;
+this.minRangeToStop = this.PI_2 - this.saftyCheckDegree;
 }
 else
 {
-if( this.rotation > maxRot )
+this.maxRangeToStop = this.saftyCheckDegree;
+this.minRangeToStop = 0;
+}
+}
+if( !this.inRangeToStop && (futureRotation > this.minRangeToStop) && (futureRotation < this.maxRangeToStop) )
+this.inRangeToStop = true;
+if( this.inRangeToStop )
 {
-this.rotation = maxRot;
-this.incSpin( this.velocity );
-}
-else if( this.rotation < minRot )
+if( (this.velocity < 0.0) ||
+(futureRotation < this.minRangeToStop) ||
+(futureRotation > this.maxRangeToStop) )
 {
-this.rotation = minRot;
-this.incSpin( this.velocity );
+timeToStop = true;
 }
 }
-this.spinState = __WEBPACK_IMPORTED_MODULE_7__slotdefs__["E" ];
+}
+if( timeToStop )
+{
+this.velocity = 0.0;
+this.lastVelocity = 0.0
+this.distToStop = 0.0
+this.spinWheel = false;
+this.disableSpinTimer = false;
+this.spinState = __WEBPACK_IMPORTED_MODULE_8__slotdefs__["E" ];
 if( this.spinStateCallback )
 for( let i = 0; i < this.spinStateSignal.length; ++i )
-this.spinStateSignal[i](this.reelId, __WEBPACK_IMPORTED_MODULE_7__slotdefs__["E" ]);
+this.spinStateSignal[i](this.reelId, __WEBPACK_IMPORTED_MODULE_8__slotdefs__["E" ]);
 break;
 }
-this.incSpin( this.velocity );
+this.incSpin( this.lastVelocity );
 break;
 }
 }
@@ -16702,7 +16996,7 @@ break;
 incSpin( velocity )
 {
 this.rotation += velocity * __WEBPACK_IMPORTED_MODULE_6__utilities_highresolutiontimer__["a" ].elapsedTime;
-this.currentRotation = this.rotation;
+this.extRotation = this.rotation;
 if( this.rotation >= this.PI_2 )
 this.rotation -= this.PI_2;
 this.setRotXYZ( 0, 0, this.rotation * this.spinDirVector, false );
@@ -16734,7 +17028,7 @@ this.spinWheel = true;
 }
 stopSpin()
 {
-if( this.spin && this.spinState < __WEBPACK_IMPORTED_MODULE_7__slotdefs__["A" ] )
+if( this.spinWheel && this.spinState < __WEBPACK_IMPORTED_MODULE_8__slotdefs__["A" ] )
 this.disableSpinTimer = true;
 }
 connect_SpinState( callback )
@@ -16769,8 +17063,88 @@ __webpack_exports__["a"] = SlotGroup;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__library_gui_ismartguibase__ = __webpack_require__(148);
-var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(20);
+var __WEBPACK_IMPORTED_MODULE_0__utilities_timer__ = __webpack_require__(29);
+var __WEBPACK_IMPORTED_MODULE_1__icycleresults__ = __webpack_require__(68);
+class SimpleCycleResults extends __WEBPACK_IMPORTED_MODULE_1__icycleresults__["a" ]
+{
+constructor( playResult )
+{
+super();
+this.playResult = playResult;
+this.cycleResultsTimer = new __WEBPACK_IMPORTED_MODULE_0__utilities_timer__["a" ];
+}
+init( slotGroupView )
+{
+this.slotGroupView = slotGroupView;
+}
+update()
+{
+}
+activate()
+{
+if( this.playResult.getPayCount() > 0 )
+{
+super.activate();
+this.slotGroupView.generateCycleResultSymbs();
+}
+}
+deactivate()
+{
+if( this.cycleResultsActive )
+{
+super.deactivate();
+}
+}
+startAnimation()
+{
+if( this.cycleResultsActive )
+{
+if( this.cycleCounter > 0 )
+this.firstCycleComplete = true;
+this.cycleResultsTimer.set( 1000 );
+let cycleResultSymbAry = this.slotGroupView.cycleResultSymbAry;
+this.curPayIndex = this.payCounter;
+this.payCounter = (this.payCounter + 1) % this.playResult.getPayCount();
+let pay = this.playResult.getPay( this.curPayIndex );
+let symbPosAry = pay.symbPosAry;
+for( let i = 0; i < cycleResultSymbAry.length; ++i )
+{
+for( let j = 0; j < cycleResultSymbAry[i].length; ++j )
+{
+cycleResultSymbAry[i][j].spriteAry[0].setAlpha( 0.2 );
+}
+}
+for( let i = 0; i < symbPosAry.length; ++i )
+{
+cycleResultSymbAry[symbPosAry[i].reel][symbPosAry[i].pos].spriteAry[0].setDefaultColor();
+}
+this.slotGroupView.setCycleResultText( true, pay );
+++this.cycleCounter;
+}
+}
+stopAnimation()
+{
+if(this.cycleResultsActive )
+{
+this.cycleResultsTimer.setExpired();
+let cycleResultSymbAry = this.slotGroupView.cycleResultSymbAry;
+for( let i = 0; i < cycleResultSymbAry.length; ++i )
+for( let j = 0; j < cycleResultSymbAry[i].length; ++j )
+cycleResultSymbAry[i][j].spriteAry[0].setDefaultColor();
+this.slotGroupView.setCycleResultText( false );
+}
+}
+isAnimating()
+{
+return !this.cycleResultsTimer.expired();
+}
+}
+__webpack_exports__["a"] = SimpleCycleResults;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+"use strict";
+var __WEBPACK_IMPORTED_MODULE_0__library_gui_ismartguibase__ = __webpack_require__(150);
+var __WEBPACK_IMPORTED_MODULE_1__library_gui_menumanager__ = __webpack_require__(18);
 var __WEBPACK_IMPORTED_MODULE_2__library_common_defs__ = __webpack_require__(0);
 class SmartConfirmBtn extends __WEBPACK_IMPORTED_MODULE_0__library_gui_ismartguibase__["a" ]
 {
@@ -16804,6 +17178,12 @@ else if( this.uiControl.name === 'big_pay_back_btn' )
 conformationMsg = 'Are you sure you|want to play the|Big Pay Back?';
 actionType = __WEBPACK_IMPORTED_MODULE_2__library_common_defs__["w" ];
 executionAction = 'big_pay_back_state';
+}
+else if( this.uiControl.name === 'wheel_demo_btn' )
+{
+conformationMsg = 'Are you sure you want|to play the Wheel Demo?';
+actionType = __WEBPACK_IMPORTED_MODULE_2__library_common_defs__["w" ];
+executionAction = 'wheel_demo_state';
 }
 yesBtn.smartGui = smartGuiCtrl;
 yesBtn.actionType = actionType;
@@ -16850,8 +17230,8 @@ __webpack_exports__["a"] = SmartGuiControl;
 }),
 (function(module, __webpack_exports__, __webpack_require__) {
 "use strict";
-var __WEBPACK_IMPORTED_MODULE_0__library_managers_spritestrategymanager__ = __webpack_require__(34);
-var __WEBPACK_IMPORTED_MODULE_1__library_2d_iaibase2d__ = __webpack_require__(150);
+var __WEBPACK_IMPORTED_MODULE_0__library_managers_spritestrategymanager__ = __webpack_require__(32);
+var __WEBPACK_IMPORTED_MODULE_1__library_2d_iaibase2d__ = __webpack_require__(152);
 var __WEBPACK_IMPORTED_MODULE_2__library_common_defs__ = __webpack_require__(0);
 var __WEBPACK_IMPORTED_MODULE_3__library_utilities_genfunc__ = __webpack_require__(7);
 class aiBall extends __WEBPACK_IMPORTED_MODULE_1__library_2d_iaibase2d__["a" ]
