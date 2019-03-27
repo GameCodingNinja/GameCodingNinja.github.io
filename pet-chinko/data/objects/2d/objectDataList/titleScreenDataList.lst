@@ -1,0 +1,23 @@
+<objectDataList2D>
+
+    <!-- DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT -->
+    <default>
+        <visual>
+            <shader id="shader_2d"/>
+        </visual>
+    </default>
+    <!-- DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT -->
+  
+    <objectList>
+
+        <object name="background">
+            <visual defaultUniformScale="1.5">
+                <texture file="data/textures/titleScreen/title_background-720.jpg"/>
+                <mesh genType="quad"/>
+            </visual>
+        </object>
+
+    </objectList>
+
+</objectDataList2D>
+

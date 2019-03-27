@@ -1,0 +1,13 @@
+<strategyLst>
+
+    <strategy name="_loading-screen_" type="actor">
+        <node name="logo"/>
+        <node name="loadAnim" instance="loadAnim">
+            <sprite>
+                <script prepare="animate"/>
+            </sprite>
+        </node>
+        <node name="load_font" instance="load_font"/>
+    </strategy>
+  
+</strategyLst>
