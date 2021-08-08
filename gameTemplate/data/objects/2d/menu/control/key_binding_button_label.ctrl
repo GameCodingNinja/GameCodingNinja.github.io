@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <UIControl>
 
     <spriteList>
@@ -6,10 +7,10 @@
             <font fontName="dejavu_sans_cond_32">
                 <alignment horzAlign="center" vertAlign="center"/>
             </font>
-            <scriptLst>
-                <script disabled="Control_Disabled"/>
-                <script inactive="Control_Inactive"/>
-            </scriptLst>
+            <scriptList>
+                <script disable="Control_Disabled" forceUpdate="true"/>
+                <script inactive="Control_Inactive" forceUpdate="true"/>
+            </scriptList>
         </sprite>
     
     </spriteList>

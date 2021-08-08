@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <UIControl>
 
     <spriteList>
@@ -7,9 +8,9 @@
                 <alignment horzAlign="left" vertAlign="center"/>
             </font>
             <position x="-420" y="0" z="0"/>
-            <scriptLst>
-                <script disabled="Control_Disabled"/>
-            </scriptLst>
+            <scriptList>
+                <script disabled="Control_Disabled" forceUpdate="true"/>
+            </scriptList>
         </sprite>
     
     </spriteList>

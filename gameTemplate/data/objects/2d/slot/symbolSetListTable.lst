@@ -1,6 +1,7 @@
+<?xml version="1.0"?>
 <listTable>
 
-    <groupList groupName="(slot)">
+    <groupList groupName="(title_screen)">
         <file path="data/objects/2d/slot/symbolset.cfg"/>
     </groupList>
   
