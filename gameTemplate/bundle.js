@@ -38525,7 +38525,7 @@ class SoundManager extends _managers_managerbase__WEBPACK_IMPORTED_MODULE_0__.Ma
                     sound.init( this.context, soundBuffer );
                     resolve();
                 },
-                (error) => reject( Error(`Error decoding audio data (${error.err}, ${filePath})!`) ) );
+                (error) => reject( Error(`Error decoding audio data (${filePath})!`) ) );
         });
     }
     
