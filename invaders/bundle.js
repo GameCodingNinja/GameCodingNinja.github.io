@@ -43936,7 +43936,7 @@ __webpack_require__.r(__webpack_exports__);
 // Load data from bundle as string
 
 
-const ASSET_COUNT = 11;
+const ASSET_COUNT = 17;
 const MOVE_NULL = -1,
       MOVE_LEFT = 0,
       MOVE_RIGHT = 1,
