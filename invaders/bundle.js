@@ -44033,7 +44033,9 @@ class Level1State extends _commonstate__WEBPACK_IMPORTED_MODULE_10__.CommonState
                         this.playerShipNode.fireTailSprite.setVisible( true );
                         this.playerShipNode.fireTailScript.pause = false;
                         this.easingX.init( this.easingX.getValue(), -10, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
-                        this.cameraEasingX.init( this.cameraEasingX.getValue(), -10, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
+
+                        // Camera easing has to move slower or faster then the elements on the screen to avoid movement studder
+                        this.cameraEasingX.init( this.cameraEasingX.getValue(), -11, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
                     }
                     else
                     {
@@ -44055,7 +44057,9 @@ class Level1State extends _commonstate__WEBPACK_IMPORTED_MODULE_10__.CommonState
                         this.playerShipNode.fireTailSprite.setVisible( true );
                         this.playerShipNode.fireTailScript.pause = false;
                         this.easingX.init( this.easingX.getValue(), 10, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
-                        this.cameraEasingX.init( this.cameraEasingX.getValue(), 10, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
+
+                        // Camera easing has to move slower or faster then the elements on the screen to avoid movement studder
+                        this.cameraEasingX.init( this.cameraEasingX.getValue(), 11, 2, _library_utilities_easingfunc__WEBPACK_IMPORTED_MODULE_16__.getLinear() );
                     }
                     else
                     {
