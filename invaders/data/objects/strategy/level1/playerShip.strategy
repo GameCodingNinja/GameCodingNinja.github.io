@@ -1,16 +1,33 @@
 <?xml version="1.0"?>
 <strategy defaultGroup="(level_1)" defaultCamera="levelCamera">
 
-    <node name="player_ship">
+    <node name="player_lazer" id="1">
 
-        <object>
-            <scale x="1.0" y="1.0" z="1.0"/>
-        </object>
+        <sprite objectName="null_lazer_sprite">
+            <scriptList>
+                <script shoot="PlayerShip_ShootLazer" prepareOnInit="false"/>
+            </scriptList>
+        </sprite>
 
-        <node name="fire_tail">
+        <node name="lazer_blast">
 
-            <sprite objectName="fire_tail" visible="false">
-                <position x="-120" y="3" z="0"/>
+            <sprite>
+                <position x="-190" y="0" z="0"/>
+            </sprite>
+
+        </node>
+
+    </node>
+
+    <node name="player_ship" id="0">
+
+        <object/>
+
+        <node name="player_fire_tail">
+
+            <sprite visible="false">
+                <position x="-120" y="0" z="0"/>
+                <scale x="2" y="2"/>
                 <scriptList>
                     <script fireTailAnim="PlayerShip_FireTailAnim"/>
                 </scriptList>
@@ -18,9 +35,11 @@
 
         </node>
 
-        <node name="ship_body">
+        <node name="player_ship_body">
 
-            <sprite objectName="player_ship"/>
+            <sprite>
+                <scale x="2" y="2"/>
+            </sprite>
 
         </node>
 

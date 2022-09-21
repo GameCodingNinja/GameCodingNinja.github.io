@@ -1,14 +1,15 @@
 {
     "display": {
         "resolution": { "width": 1280, "height": 720 },
-        "default": { "width": 1920, "height": 1080 } },
+        "default": { "width": 1280, "height": 720 } },
 
     "device": {
         "projection": { "projectType": "orthographic", "minZDist": 5, "maxZDist": 1000, "viewAngle": 45 },
         "cull": { "enable": "false", "frontFace": "CCW", "cullFace": "BACK" },
         "depthStencilBuffer": { "enableDepthBuffer": "false", "createStencilBuffer": "true", "clearStencilBuffer": "true", "stencilBufferBitSize": 1 },
         "targetBuffer": { "clear": "true" },
-        "gamepad": { "allow": "true" } },
+        "gamepad": { "allow": "true", "stickDeadZone": 0.3 },
+        "stats": { "allow": "false" } },
 
     "game": { "name": "invaders", "id": "invaders" }
 }
