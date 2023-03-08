@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<strategyLst>
+<loader>
 
     <strategy name="_loading-screen_" type="actor">
-        <node name="logo"/>
+        <!--<node name="logo"/>-->
         <node name="loadAnim" instance="loadAnim">
             <sprite>
                 <script prepare="animate"/>
@@ -11,4 +11,4 @@
         <node name="load_font" instance="load_font"/>
     </strategy>
   
-</strategyLst>
+</loader>

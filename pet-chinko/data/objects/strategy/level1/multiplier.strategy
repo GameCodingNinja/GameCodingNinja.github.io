@@ -1,60 +1,60 @@
 <?xml version="1.0"?>
-<node defaultGroup="(level_1)">
+<strategy defaultGroup="(level_1)">
     
-    <node name="dog_head_0">
-        <sprite objectName="dog_head_0" id="0">
-            <scriptLst>
+    <node name="dog_head_0" id="0">
+        <sprite objectName="dog_head_0">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-    <node name="dog_head_1">
-        <sprite objectName="dog_head_1" id="0">
-            <scriptLst>
+    <node name="dog_head_1" id="0">
+        <sprite objectName="dog_head_1">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-    <node name="dog_head_2">
-        <sprite objectName="dog_head_2" id="0">
-            <scriptLst>
+    <node name="dog_head_2" id="0">
+        <sprite objectName="dog_head_2">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-    <node name="dog_head_3">
-        <sprite objectName="dog_head_3" id="0">
-            <scriptLst>
+    <node name="dog_head_3" id="0">
+        <sprite objectName="dog_head_3">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-    <node name="dog_head_4">
-        <sprite objectName="dog_head_4" id="0">
-            <scriptLst>
+    <node name="dog_head_4" id="0">
+        <sprite objectName="dog_head_4">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-    <node name="dog_head_5">
-        <sprite objectName="dog_head_5" id="0">
-            <scriptLst>
+    <node name="dog_head_5" id="0">
+        <sprite objectName="dog_head_5">
+            <scriptList>
                 <script delayDestroy="Level_DelayDestroy"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
     <node name="warp">
         <sprite objectName="warp">
-            <scriptLst>
+            <scriptList>
                 <script animate="Level_PlayAnim"/>
-            </scriptLst>
+            </scriptList>
         </sprite>
     </node>
 
-</node>
+</strategy>
