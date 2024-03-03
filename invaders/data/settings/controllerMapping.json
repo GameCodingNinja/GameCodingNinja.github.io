@@ -32,7 +32,7 @@
         "playerVisible": [
             { "action": "menu_select", "componetId": "LEFT MOUSE", "defaultId": "LEFT MOUSE", "configurable": "true" },
             { "action": "shoot", "componetId": "LEFT MOUSE", "defaultId": "LEFT MOUSE", "configurable": "true" },
-            { "action": "boost", "componetId": "RIGHT MOUSE", "defaultId": "RIGHT MOUSE", "configurable": "true" } ] },
+            { "action": "boost", "componetId": "MIDDLE MOUSE", "defaultId": "MIDDLE MOUSE", "configurable": "true" } ] },
 
     "gamepadMapping": {
         "playerHidden": [
