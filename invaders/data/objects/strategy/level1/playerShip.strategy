@@ -20,8 +20,8 @@
 
         <sprite>
             <scriptList>
-                <script shoot="EnemyShip_Shoot"/>
-                <script hit="EnemyShot_Hit"/>
+                <script shoot="Enemy00Ship_Shoot"/>
+                <script hit="Enemy00Shot_Hit"/>
             </scriptList>
         </sprite>
 
@@ -47,11 +47,27 @@
             </scriptList>
         </sprite>
 
+        <node name="UIBoostBar" type="uiControlNode">
+        
+            <uiProgressBar defaultState="inactive" useSizeForRadiusCalc="false">
+                <position x="0" y="20" z="0"/>
+                <scale x="0.35" y="0.5"/>
+                <spriteLst>
+                    <sprite objectName="progress_frame"/>
+                    <sprite objectName="boost_solid"/>
+                </spriteLst>
+                
+                <!-- stencil mask -->
+                <stencilMask objectName="" spriteIndex="1" />
+            </uiProgressBar>
+
+        </node>
+
         <node name="UIProgressBar" type="uiControlNode">
         
             <uiProgressBar defaultState="inactive" useSizeForRadiusCalc="false">
                 <position x="0" y="15" z="0"/>
-                <scale x="0.5" y="0.5"/>
+                <scale x="0.35" y="0.5"/>
                 <spriteLst>
                     <sprite objectName="progress_frame"/>
                     <sprite objectName="progress_solid"/>

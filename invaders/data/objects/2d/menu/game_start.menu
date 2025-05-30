@@ -10,19 +10,23 @@
 
     <staticMenuControls>
 
-        <control controlType="label" defaultState="inactive">
+        <control name="bold_font_msg" controlType="label" defaultState="inactive">
             <filePath file="data/objects/2d/menu/control/menu_label.ctrl"/>
             <position x="0" y="120" z="0"/>
             <fontStringList>
                 <string text="Your city is under attack!"/>
+                <string text="Thanks for watching the AD!"/>
+                <string text="Reward AD failed"/>
             </fontStringList>
         </control>
 
-        <control controlType="label" defaultState="inactive">
+        <control name="reg_font_msg" controlType="label" defaultState="inactive">
             <filePath file="data/objects/2d/menu/control/menu_label_cond_45.ctrl"/>
             <position x="0" y="0" z="0"/>
             <fontStringList>
                 <string text="Try to keep the alien invaders|from destroying the buildings!"/>
+                <string text="Watching the AD helps me|maintain and create new games.|Your reward(s) has been enabled."/>
+                <string text="The AD may have been stopped or|blocked. Reward not enabled."/>
             </fontStringList>
         </control>
 
