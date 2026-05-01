@@ -6,6 +6,7 @@
         <visual>
             <mesh genType="quad"/>
             <shader id="shader_2d"/>
+            <texture filter="NEAREST"/>
         </visual>
     </default>
     <!-- DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT DEFAULT -->
@@ -14,7 +15,7 @@
 
         <object name="progress_frame">
             <visual>
-                <texture file="data/textures/level/8x8_1_pixel_frame.png" filter="NEAREST"/>
+                <texture file="data/textures/level/8x8_1_pixel_frame.png"/>
                 <mesh genType="scaled_frame">
                     <scaledFrame thicknessWidth="3" thicknessHeight="3" centerQuad="true"/>
                 </mesh>
@@ -41,133 +42,133 @@
 
         <object name="background">
             <visual>
-                <texture count="3" file="data/textures/level/background_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/background_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="buildingsback">
             <visual>
-                <texture count="3" file="data/textures/level/buildingsback_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingsback_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="buildingsfront">
             <visual>
-                <texture count="3" file="data/textures/level/buildingsfront_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingsfront_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="trees">
             <visual>
-                <texture count="3" file="data/textures/level/trees_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/trees_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="traintracks">
             <visual>
-                <texture count="3" file="data/textures/level/traintracks_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/traintracks_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="train">
             <visual>
-                <texture count="3" file="data/textures/level/train_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/train_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_0">
             <visual>
-                <texture count="3" file="data/textures/level/cloudA_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudA_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_1">
             <visual>
-                <texture count="3" file="data/textures/level/cloudB_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudB_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_2">
             <visual>
-                <texture count="3" file="data/textures/level/cloudC_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudC_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_3">
             <visual>
-                <texture count="3" file="data/textures/level/cloudD_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudD_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_4">
             <visual>
-                <texture count="3" file="data/textures/level/cloudE_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudE_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_5">
             <visual>
-                <texture count="3" file="data/textures/level/cloudF_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudF_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_6">
             <visual>
-                <texture count="3" file="data/textures/level/cloudG_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudG_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="cloud_7">
             <visual>
-                <texture count="3" file="data/textures/level/cloudH_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/cloudH_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building01">
             <visual>
-                <texture count="3" file="data/textures/level/buildingA_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingA_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building02">
             <visual>
-                <texture count="3" file="data/textures/level/buildingB_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingB_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building03">
             <visual>
-                <texture count="3" file="data/textures/level/buildingC_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingC_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building04">
             <visual>
-                <texture count="3" file="data/textures/level/buildingD_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingD_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building05">
             <visual>
-                <texture count="3" file="data/textures/level/buildingE_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingE_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building06">
             <visual>
-                <texture count="3" file="data/textures/level/buildingF_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingF_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building07">
             <visual>
-                <texture count="3" file="data/textures/level/buildingG_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingG_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="building08">
             <visual>
-                <texture count="3" file="data/textures/level/buildingH_${NUM}.png" filter="NEAREST"/>
+                <texture count="3" file="data/textures/level/buildingH_${NUM}.png"/>
             </visual>
         </object>
 
@@ -177,9 +178,9 @@
             </visual>
             <!-- Don't need a collision signal for the player ship since other elements initiate the collision -->
             <collision filterCategoryBits="0x00000000" filterMaskBits="0x00000006" collisionSignal="false">
-                <rect radiusFromVisual="true" rectFromVisual="true" rectAsSizeModifier="true">
+                <rectList radiusFromVisual="true" rectFromVisual="true" rectAsSizeModifier="true">
                     <rect x1="-5" y1="-5" x2="-5" y2="-5"/>
-                </rect>
+                </rectList>
                 <!--<polygonList radiusFromVisual="true" pointsToModelView="true" optionalPointCheck="false">
                     <polygon>
                         <point x="5" y="5"/>
@@ -194,28 +195,31 @@
 
         <object name="player_ship_body">
             <visual>
-                <texture file="data/textures/playerShip/blue_1_idle.png" filter="NEAREST"/>
+                <texture file="data/textures/playerShip/blue_1_idle.png"/>
             </visual>
         </object>
 
         <object name="player_fire_tail">
             <visual>
-                <texture count="12" file="data/textures/playerShip/firetail_halfsize_pixel_${NUM}.png" filter="NEAREST"/>
+                <texture count="12" file="data/textures/playerShip/firetail_halfsize_pixel_${NUM}.png"/>
             </visual>
         </object>
 
         <object name="player_shot">
             <visual>
-                <texture file="data/textures/playerShip/projectile03-4.png" filter="NEAREST"/>
+                <texture file="data/textures/playerShip/projectile03-4.png"/>
             </visual>
             <collision filterCategoryBits="0x00000001" filterMaskBits="0x00000000" collisionSignal="true">
                 <!--<circle radiusFromVisual="true"/>-->
                 <!--<rect radiusFromVisual="true" rectFromVisual="true"/>-->
-                <point radiusFromVisual="true"/>
+                <pointList radiusFromVisual="true">
+                    <point x="18" y="0"/>
+                    <point x="-18" y="0"/>
+                </pointList>
                 <!--<lineList radiusFromVisual="true" pointsToModelView="true">
                     <line>
-                        <point x="5" y="4"/>
-                        <point x="10" y="-4"/>
+                        <point x="37" y="2"/>
+                        <point x="0" y="2"/>
                     </line>
                 </lineList>-->
                 <!--<polygonList radiusFromVisual="true" pointsToModelView="true" optionalPointCheck="false">
@@ -231,19 +235,32 @@
 
         <object name="enemy00_ship">
             <visual>
-                <texture file="data/textures/enemyShip/enemy00.png"/>
+                <texture count="2" file="data/textures/enemyShip/enemy00_${NUM}.png"/>
             </visual>
             <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
 
-                <rect radiusFromVisual="true" rectFromVisual="true" rectAsSizeModifier="true">
-                    <rect x1="-5" y1="-5" x2="-5" y2="-5"/>
-                </rect>
+                <!--<polygonList radiusFromVisual="true" pointsToModelView="true" optionalPointCheck="false">
+                    <polygon>
+                        <point x="24" y="-2"/>
+                        <point x="44" y="-2"/>
+                        <point x="70" y="30"/>
+                        <point x="70" y="64"/>
+                        <point x="51" y="87"/>
+                        <point x="18" y="87"/>
+                        <point x="0" y="64"/>
+                        <point x="0" y="30"/>
+                    </polygon>
+                </polygonList>-->
 
-                <!--<rect radiusFromVisual="true" rectToModelView="true">
+                <rectList radiusFromVisual="true" rectFromVisual="true" rectAsSizeModifier="true">
+                    <rect x1="-5" y1="-1" x2="-5" y2="-1"/>
+                </rectList>
+
+                <!--<rectList radiusFromVisual="true" rectToModelView="true">
                     <rect x1="9" y1="12" x2="47" y2="120"/>
                     <rect x1="45" y1="17" x2="111" y2="102"/>
                     <rect x1="112" y1="12" x2="150" y2="120"/>
-                </rect>
+                </rectList>
                 
                 <circle radiusFromVisual="true"/>
                 <point radiusFromVisual="true"/>
@@ -258,51 +275,60 @@
 
         <object name="enemy01_ship">
             <visual>
-                <texture file="data/textures/enemyShip/enemy01.png" />
+                <texture file="data/textures/enemyShip/enemy01a.png" />
             </visual>
             <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
                 
                 <polygonList radiusFromVisual="true" pointsToModelView="true" optionalPointCheck="false">
                     <polygon>
-                        <point x="26" y="1"/>
+                        <point x="30" y="1"/>
                         <point x="60" y="1"/>
-                        <point x="111" y="115"/>
-                        <point x="60" y="148"/>
+                        <point x="130" y="106"/>
+                        <point x="60" y="128"/>
                     </polygon>
                     <polygon>
                         <point x="60" y="128"/>
-                        <point x="107" y="103"/>
-                        <point x="126" y="229"/>
-                        <point x="39" y="229"/>
+                        <point x="130" y="106"/>
+                        <point x="160" y="220"/>
+                        <point x="50" y="225"/>
                     </polygon>
                     <polygon>
-                        <point x="56" y="223"/>
-                        <point x="113" y="223"/>
-                        <point x="113" y="297"/>
-                        <point x="53" y="297"/>
-                        <point x="0" y="268"/>
-                        <point x="0" y="254"/>
+                        <point x="66" y="225"/>
+                        <point x="135" y="225"/>
+                        <point x="135" y="300"/>
+                        <point x="66" y="300"/>
+                        <point x="0" y="270"/>
+                        <point x="0" y="253"/>
                     </polygon>
                     <polygon>
-                        <point x="35" y="291"/>
-                        <point x="126" y="291"/>
-                        <point x="99" y="427"/>
-                        <point x="60" y="387"/>
+                        <point x="50" y="300"/>
+                        <point x="160" y="300"/>
+                        <point x="130" y="415"/>
+                        <point x="60" y="390"/>
                     </polygon>
                     <polygon>
-                        <point x="60" y="337"/>
-                        <point x="103" y="418"/>
-                        <point x="38" y="520"/>
-                        <point x="20" y="520"/>
+                        <point x="60" y="390"/>
+                        <point x="130" y="415"/>
+                        <point x="60" y="520"/>
+                        <point x="26" y="520"/>
                     </polygon>
                 </polygonList>
 
             </collision>
         </object>
 
+        <object name="enemy02_ship">
+            <visual>
+                <texture file="data/textures/enemyShip/enemy02a.png"/>
+            </visual>
+            <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
+                <circle radius="25"/>
+            </collision>
+        </object>
+
         <object name="enemy_shot">
             <visual>
-                <texture file="data/textures/enemyShip/projectile06-5.png" filter="NEAREST"/>
+                <texture count="2" file="data/textures/enemyShip/projectile_${NUM}.png"/>
             </visual>
             <collision filterCategoryBits="0x00000004" filterMaskBits="0x00000000" collisionSignal="true">
                 <circle radius="10"/>
@@ -319,7 +345,7 @@
 
         <object name="hud_frame">
             <visual>
-                <texture file="data/textures/level/16x16_3_pixel_frame.png" filter="NEAREST"/>
+                <texture file="data/textures/level/16x16_3_pixel_frame.png"/>
                 <mesh genType="scaled_frame">
                     <scaledFrame thicknessWidth="5" thicknessHeight="5" centerQuad="false"/>
                 </mesh>
@@ -330,7 +356,7 @@
 
         <object name="level_frame">
             <visual>
-                <texture file="data/textures/level/16x16_3_pixel_frame.png" filter="NEAREST"/>
+                <texture file="data/textures/level/16x16_3_pixel_frame.png"/>
                 <mesh genType="scaled_frame">
                     <scaledFrame thicknessWidth="5" thicknessHeight="5" centerQuad="false"/>
                 </mesh>
@@ -341,7 +367,7 @@
 
         <object name="hud_screen_frame">
             <visual>
-                <texture file="data/textures/level/16x16_3_pixel_frame.png" filter="NEAREST"/>
+                <texture file="data/textures/level/16x16_3_pixel_frame.png"/>
                 <mesh genType="scaled_frame">
                     <scaledFrame thicknessWidth="5" thicknessHeight="5" centerQuad="false"/>
                 </mesh>
@@ -368,7 +394,7 @@
 
         <object name="level_progress_frame">
             <visual>
-                <texture file="data/textures/level/8x8_1_pixel_frame.png" filter="NEAREST"/>
+                <texture file="data/textures/level/8x8_1_pixel_frame.png"/>
                 <mesh genType="scaled_frame">
                     <scaledFrame thicknessWidth="3" thicknessHeight="3" centerQuad="true"/>
                 </mesh>
@@ -387,13 +413,28 @@
 
         <object name="explode">
             <visual>
-                <texture count="11" file="data/textures/explosion/explosion_${NUM}.png" filter="NEAREST"/>
+                <texture count="11" file="data/textures/explosion/explosion_${NUM}.png"/>
+            </visual>
+        </object>
+
+        <object name="health_character">
+            <visual>
+                <texture count="2" file="data/textures/character/healthA_${NUM}.png"/>
+            </visual>
+            <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
+                <circle radius="30"/>
+            </collision>
+        </object>
+
+        <object name="help">
+            <visual>
+                <texture file="data/textures/character/help.png"/>
             </visual>
         </object>
 
         <object name="marker">
             <visual>
-                <texture file="data/textures/level/projectile02-4.png" filter="NEAREST"/>
+                <texture file="data/textures/level/projectile02-4.png"/>
             </visual>
         </object>
 
