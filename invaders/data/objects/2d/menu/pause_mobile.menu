@@ -75,7 +75,7 @@
         </control>
 
         <!-- Key Bindings Button -->
-        <control name="key_binding_btn" controlType="button" defaultState="disabled">
+        <control name="key_binding_btn" controlType="button" defaultState="inactive">
             <filePath file="data/objects/2d/menu/control/button_275x55.ctrl"/>
             <position x="0" y="-100" z="0"/>
             <fontStringList>
