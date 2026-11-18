@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ai>
+
+    <node name="AI_MiniBoss00">
+
+        <head script="AI_MiniBoss00_Head"/>
+
+        <node>
+
+            <composite script="AI_Composite" condition="all_success"/>
+
+            <node>
+
+                <leaf script="AI_MiniBoss00_Descend"/>
+
+            </node>
+
+            <node>
+
+                <composite script="AI_Composite" condition="all_success"/>
+
+                <node>
+
+                    <leaf script="AI_MiniBoss00_Go"/>
+
+                </node>
+
+
+            </node>
+
+        </node>
+
+    </node>
+
+</ai>

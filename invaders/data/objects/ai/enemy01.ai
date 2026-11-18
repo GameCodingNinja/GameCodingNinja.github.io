@@ -17,14 +17,37 @@
 
             <node>
 
-                <composite script="AI_Composite" condition="all_success"/>
+                <decorator script="AI_Decorator" type="repeater"/>
 
                 <node>
 
-                    <leaf script="AI_Enemy01_Go"/>
+                    <composite script="AI_Composite" condition="all_success"/>
+
+                    <node>
+
+                        <leaf script="AI_Enemy01_Roam"/>
+
+                    </node>
+
+                    <node>
+
+                        <leaf script="AI_Enemy01_Charge"/>
+
+                    </node>
+
+                    <node>
+
+                        <leaf script="AI_Enemy01_Spin"/>
+
+                    </node>
+
+                    <node>
+
+                        <leaf script="AI_Enemy01_Flee"/>
+
+                    </node>
 
                 </node>
-
 
             </node>
 
