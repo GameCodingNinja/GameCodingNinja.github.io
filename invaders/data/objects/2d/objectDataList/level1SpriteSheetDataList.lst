@@ -488,36 +488,22 @@
                 <!-- clock wise winding seem to work a bit better -->
                 <polygonList radiusFromVisual="true" pointsToModelView="true" optionalPointCheck="false">
                     <polygon>
-                        <point x="30" y="1"/>
-                        <point x="60" y="1"/>
-                        <point x="130" y="106"/>
-                        <point x="60" y="128"/>
-                    </polygon>
-                    <polygon>
-                        <point x="60" y="128"/>
-                        <point x="130" y="106"/>
-                        <point x="160" y="220"/>
-                        <point x="50" y="225"/>
-                    </polygon>
-                    <polygon>
-                        <point x="66" y="225"/>
-                        <point x="135" y="225"/>
-                        <point x="135" y="300"/>
-                        <point x="66" y="300"/>
-                        <point x="0" y="270"/>
-                        <point x="0" y="253"/>
-                    </polygon>
-                    <polygon>
-                        <point x="50" y="300"/>
-                        <point x="160" y="300"/>
-                        <point x="130" y="415"/>
-                        <point x="60" y="390"/>
-                    </polygon>
-                    <polygon>
-                        <point x="60" y="390"/>
-                        <point x="130" y="415"/>
-                        <point x="60" y="520"/>
-                        <point x="26" y="520"/>
+                        <point x="37" y="0"/>
+                        <point x="97" y="63"/>
+                        <point x="150" y="166"/>
+                        <point x="130" y="224"/>
+                        <point x="130" y="297"/>
+                        <point x="150" y="355"/>
+                        <point x="98" y="457"/>
+                        <point x="36" y="521"/>
+                        <point x="63" y="463"/>
+                        <point x="99" y="335"/>
+                        <point x="46" y="276"/>
+                        <point x="3" y="271"/>
+                        <point x="3" y="253"/>
+                        <point x="46" y="248"/>
+                        <point x="100" y="188"/>
+                        <point x="59" y="48"/>
                     </polygon>
                 </polygonList>
             </collision>
@@ -673,7 +659,7 @@
                 </mesh>
             </visual>
             <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
-                <circle radius="143"/>
+                <circle radius="85"/>
             </collision>
         </object>
 
@@ -703,7 +689,7 @@
                 </mesh>
             </visual>
             <collision filterCategoryBits="0x00000002" filterMaskBits="0x00000001" collisionSignal="true">
-                <circle radius="70"/>
+                <circle radius="50"/>
             </collision>
         </object>
 
